@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface ItemRepository {
     Item saveItem(Item item);
+
     Item findItemById(Long itemId);
+
     List<Item> findItemByOwner(Long ownerId);
+
     List<Item> findItemByParam(String param);
 }

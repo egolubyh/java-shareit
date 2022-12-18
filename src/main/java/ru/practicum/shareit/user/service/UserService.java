@@ -9,8 +9,12 @@ import java.util.List;
 
 public interface UserService {
     UserDto addNewUser(UserDto userDto) throws DuplicateEmailException, NoEmailException, InvalidEmailException;
+
     UserDto findUserById(Long userId);
+
     List<UserDto> findAllUsers();
+
     UserDto updateUserById(Long userId, UserDto userDto) throws DuplicateEmailException, InvalidEmailException;
+
     void deleteUserById(Long userId);
 }

@@ -17,8 +17,10 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+
     @Override
-    public ItemDto addNewItem(ItemDto itemDto, Long ownerId) throws UserNotFoundException, NoNameException, NoAvailableException, NoDescriptionException {
+    public ItemDto addNewItem(ItemDto itemDto, Long ownerId) throws UserNotFoundException,
+            NoNameException, NoAvailableException, NoDescriptionException {
         if (userRepository.findUserById(ownerId) == null) {
             throw new UserNotFoundException("Пользователя с id = " + ownerId + " не существует");
         }

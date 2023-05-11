@@ -1,12 +1,15 @@
 package ru.practicum.shareit.user.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.user.exception.DuplicateEmailException;
-import ru.practicum.shareit.user.exception.InvalidEmailException;
-import ru.practicum.shareit.user.exception.NoEmailException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice("ru.practicum.shareit.user.controller")
 public class UserErrorHandler {
@@ -18,20 +21,21 @@ public class UserErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleNoEmailException(final NoEmailException e) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleUserNotFoundException(final UserNotFoundException e) {
         return e.getMessage();
     }
 
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleInvalidEmailException(final InvalidEmailException e) {
-        return e.getMessage();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleDuplicateEmailException(final DuplicateEmailException e) {
-        return e.getMessage();
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        HashMap<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

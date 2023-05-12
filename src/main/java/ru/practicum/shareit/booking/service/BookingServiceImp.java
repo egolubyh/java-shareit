@@ -43,7 +43,9 @@ public class BookingServiceImp implements BookingService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User с id = " + userId + " не существует."));
 
-        if (!item.getAvailable()) throw new NotAvailableException("Item недоступна для бронирования");
+        if (!item.getAvailable()) {
+            throw new NotAvailableException("Item недоступна для бронирования");
+        }
 
         if (item.getOwner().equals(user)) {
             throw new BookingOwnerException("Владелец не может бронировать свою вещь");
@@ -68,7 +70,7 @@ public class BookingServiceImp implements BookingService {
         if (booking.getStatus().equals(Status.APPROVED)) {
             throw new BadBookingStatusException("Статус уже подтвержден");
         }
-        if (approved) {
+        if (Boolean.TRUE.equals(approved)) {
             booking.setStatus(Status.APPROVED);
         } else {
             booking.setStatus(Status.REJECTED);
@@ -103,7 +105,8 @@ public class BookingServiceImp implements BookingService {
                         LocalDateTime.now(), LocalDateTime.now());
                 break;
             } case "PAST" : {
-                bookings = bookingRepository.findBookingByBookerAndEndBeforeOrderByStartDesc(booker, LocalDateTime.now());
+                bookings = bookingRepository.findBookingByBookerAndEndBeforeOrderByStartDesc(
+                        booker, LocalDateTime.now());
                 break;
             } case "FUTURE" : {
                 bookings = bookingRepository.findBookingByBookerAndStartGreaterThanOrderByStartDesc(booker,
@@ -141,7 +144,8 @@ public class BookingServiceImp implements BookingService {
                         LocalDateTime.now(), LocalDateTime.now());
                 break;
             } case "PAST" : {
-                bookings = bookingRepository.findBookingByItem_OwnerAndEndBeforeOrderByStartDesc(owner, LocalDateTime.now());
+                bookings = bookingRepository.findBookingByItem_OwnerAndEndBeforeOrderByStartDesc(
+                        owner, LocalDateTime.now());
                 break;
             } case "FUTURE" : {
                 bookings = bookingRepository.findBookingByItem_OwnerAndStartGreaterThanOrderByStartDesc(owner,
@@ -168,10 +172,14 @@ public class BookingServiceImp implements BookingService {
         LocalDateTime end = booking.getEnd();
 
         if (start != null && end != null) {
-            if (end.isBefore(start)) throw new DateEndBeforeStartException("Дата начала бронирования не может быть " +
-                    "после даты окончания бронирования.");
-            if (end.isEqual(start)) throw new DateEndEqualStartException("Дата начала бронирования не может быть " +
-                    "равна дате окончания бронирования.");
+            if (end.isBefore(start)) {
+                throw new DateEndBeforeStartException("Дата начала бронирования не может быть " +
+                        "после даты окончания бронирования.");
+            }
+            if (end.isEqual(start)) {
+                throw new DateEndEqualStartException("Дата начала бронирования не может быть " +
+                        "равна дате окончания бронирования.");
+            }
         }
     }
 }

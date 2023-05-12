@@ -56,7 +56,9 @@ public class BookingDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookingDto that = (BookingDto) o;
-        return id.equals(that.id) && itemId.equals(that.itemId) && start.equals(that.start) && end.equals(that.end) && booker.equals(that.booker) && status == that.status && item.equals(that.item);
+        return id.equals(that.id) && itemId.equals(that.itemId) && start.equals(that.start)
+                && end.equals(that.end) && booker.equals(that.booker) && status == that.status
+                && item.equals(that.item);
     }
 
     @Override

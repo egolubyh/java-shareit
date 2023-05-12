@@ -59,7 +59,10 @@ public class ItemIdDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemIdDto itemIdDto = (ItemIdDto) o;
-        return id.equals(itemIdDto.id) && name.equals(itemIdDto.name) && description.equals(itemIdDto.description) && available.equals(itemIdDto.available) && owner.equals(itemIdDto.owner) && lastBooking.equals(itemIdDto.lastBooking) && nextBooking.equals(itemIdDto.nextBooking) && comments.equals(itemIdDto.comments);
+        return id.equals(itemIdDto.id) && name.equals(itemIdDto.name) && description.equals(itemIdDto.description)
+                && available.equals(itemIdDto.available) && owner.equals(itemIdDto.owner)
+                && lastBooking.equals(itemIdDto.lastBooking) && nextBooking.equals(itemIdDto.nextBooking)
+                && comments.equals(itemIdDto.comments);
     }
 
     @Override

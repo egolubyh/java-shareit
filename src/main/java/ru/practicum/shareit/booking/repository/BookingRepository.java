@@ -23,7 +23,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingByBookerAndEndBeforeOrderByStartDesc(User booker, LocalDateTime end);
 
-    List<Booking> findBookingByBookerAndStartBeforeAndEndAfterOrderByStartDesc(User booker, LocalDateTime start, LocalDateTime end);
+    List<Booking> findBookingByBookerAndStartBeforeAndEndAfterOrderByStartDesc(
+            User booker, LocalDateTime start, LocalDateTime end);
 
     List<Booking> findBookingByItem_OwnerAndStatusOrderByStartDesc(User itemOwner, Status status);
 
@@ -31,7 +32,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingByItem_OwnerAndStartGreaterThanOrderByStartDesc(User itemOwner, LocalDateTime start);
 
-    List<Booking> findBookingByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(User itemOwner, LocalDateTime start, LocalDateTime end);
+    List<Booking> findBookingByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(
+            User itemOwner, LocalDateTime start, LocalDateTime end);
 
     List<Booking> findBookingByItem_OwnerAndEndBeforeOrderByStartDesc(User itemOwner, LocalDateTime start);
 
@@ -39,9 +41,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.id = ?1 AND (b.booker = ?2 OR b.item.owner = ?2) ")
     Optional<Booking> findBookingByIdAndUser(Long id, User user);
 
-    Optional<Booking> findFirstByBookerAndItemAndStatusAndEndBefore(User booker, Item item, Status status, LocalDateTime end);
+    Optional<Booking> findFirstByBookerAndItemAndStatusAndEndBefore(
+            User booker, Item item, Status status, LocalDateTime end);
 
-    Optional<Booking> findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(Item item, LocalDateTime start, Status status);
+    Optional<Booking> findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(
+            Item item, LocalDateTime start, Status status);
 
-    Optional<Booking> findFirstByItemAndStartAfterAndStatusOrderByStartAsc(Item item, LocalDateTime start, Status status);
+    Optional<Booking> findFirstByItemAndStartAfterAndStatusOrderByStartAsc(
+            Item item, LocalDateTime start, Status status);
 }

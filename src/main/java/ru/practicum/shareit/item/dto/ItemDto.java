@@ -40,7 +40,8 @@ public class ItemDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemDto itemDto = (ItemDto) o;
-        return id.equals(itemDto.id) && name.equals(itemDto.name) && description.equals(itemDto.description) && available.equals(itemDto.available);
+        return id.equals(itemDto.id) && name.equals(itemDto.name) && description.equals(itemDto.description)
+                && available.equals(itemDto.available);
     }
 
     @Override

@@ -55,7 +55,8 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllBookingByUser(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                                          @RequestParam(value = "state", defaultValue = "ALL", required = false) String state)
+                                          @RequestParam(value = "state", defaultValue = "ALL",
+                                                  required = false) String state)
             throws UserNotFoundException, UnsupportedStatusException {
         log.info("Получен запрос к эндпоинту: /bookings, метод GET");
         return bookingService.getAllBookingByUser(userId, state);
@@ -63,7 +64,8 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingByOwner(@RequestHeader(value = "X-Sharer-User-Id") Long ownerId,
-                                          @RequestParam(value = "state", defaultValue = "ALL", required = false) String state)
+                                          @RequestParam(value = "state", defaultValue = "ALL",
+                                                  required = false) String state)
             throws UserNotFoundException, UnsupportedStatusException {
         log.info("Получен запрос к эндпоинту: /bookings, метод GET");
         return bookingService.getAllBookingByOwner(ownerId, state);

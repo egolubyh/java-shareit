@@ -30,7 +30,11 @@ public class UserMapper {
         String nameUserDto = userDto.getName();
         String emailUserDto = userDto.getEmail();
 
-        if (nameUserDto != null) user.setName(nameUserDto);
-        if (emailUserDto != null) user.setEmail(emailUserDto);
+        if (nameUserDto != null) {
+            user.setName(nameUserDto);
+        }
+        if (emailUserDto != null) {
+            user.setEmail(emailUserDto);
+        }
     }
 }

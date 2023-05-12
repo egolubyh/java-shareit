@@ -11,14 +11,19 @@ import java.util.List;
 
 public interface BookingService {
     BookingDto addBooking(BookingDto booking, Long id)
-            throws ItemNotFoundException, NotAvailableException, UserNotFoundException, DateEndBeforeStartException,
-            DateEndEqualStartException, BookingOwnerException;
+            throws ItemNotFoundException, NotAvailableException, UserNotFoundException,
+            DateEndBeforeStartException, DateEndEqualStartException, BookingOwnerException;
 
-    BookingDto updateApprove(Long bookingId, Long userId, Boolean approved) throws UserNotFoundException, BookingNotFoundException, BadOwnerException, BadBookingStatusException;
+    BookingDto updateApprove(Long bookingId, Long userId, Boolean approved)
+            throws UserNotFoundException, BookingNotFoundException, BadOwnerException,
+            BadBookingStatusException;
 
-    BookingDto getBooking(Long bookingId, Long userId) throws UserNotFoundException, BookingNotFoundException;
+    BookingDto getBooking(Long bookingId, Long userId)
+            throws UserNotFoundException, BookingNotFoundException;
 
-    List<BookingDto> getAllBookingByUser(Long userId, String state) throws UserNotFoundException, UnsupportedStatusException;
+    List<BookingDto> getAllBookingByUser(Long userId, String state)
+            throws UserNotFoundException, UnsupportedStatusException;
 
-    List<BookingDto> getAllBookingByOwner(Long ownerId, String state) throws UserNotFoundException, UnsupportedStatusException;
+    List<BookingDto> getAllBookingByOwner(Long ownerId, String state)
+            throws UserNotFoundException, UnsupportedStatusException;
 }

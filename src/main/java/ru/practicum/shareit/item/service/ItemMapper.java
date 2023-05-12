@@ -56,8 +56,14 @@ public class ItemMapper {
         String descriptionItemDto = itemDto.getDescription();
         Boolean availableItemDto = itemDto.getAvailable();
 
-        if (nameItemDto != null) item.setName(nameItemDto);
-        if (descriptionItemDto != null) item.setDescription(descriptionItemDto);
-        if (availableItemDto != null) item.setAvailable(availableItemDto);
+        if (nameItemDto != null) {
+            item.setName(nameItemDto);
+        }
+        if (descriptionItemDto != null) {
+            item.setDescription(descriptionItemDto);
+        }
+        if (availableItemDto != null) {
+            item.setAvailable(availableItemDto);
+        }
     }
 }

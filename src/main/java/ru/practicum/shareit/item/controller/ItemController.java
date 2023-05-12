@@ -51,13 +51,15 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemIdDto findItemById(@PathVariable Long itemId,
-                                  @RequestHeader("X-Sharer-User-Id") Long ownerId) throws ItemNotFoundException {
+                                  @RequestHeader("X-Sharer-User-Id") Long ownerId)
+            throws ItemNotFoundException {
         log.info("Получен запрос к эндпоинту: /items/{}, метод GET", itemId);
         return itemService.readItem(itemId, ownerId);
     }
 
     @GetMapping
-    public List<ItemIdDto> findItemByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId) throws UserNotFoundException {
+    public List<ItemIdDto> findItemByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId)
+            throws UserNotFoundException {
         log.info("Получен запрос к эндпоинту: /items, метод GET");
         return itemService.readAllItemByOwner(ownerId);
     }

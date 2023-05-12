@@ -17,7 +17,9 @@ public interface ItemService {
 
     List<ItemDto> readAllItemByParam(String search);
 
-    ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId) throws BadOwnerException, ItemNotFoundException;
+    ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId)
+            throws BadOwnerException, ItemNotFoundException;
 
-    CommentDto addNewComment(CommentDto commentDto, Long itemId, Long userId) throws ItemNotFoundException, UserNotFoundException, BookingNotFoundException;
+    CommentDto addNewComment(CommentDto commentDto, Long itemId, Long userId)
+            throws ItemNotFoundException, UserNotFoundException, BookingNotFoundException;
 }

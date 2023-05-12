@@ -73,9 +73,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemIdDto readItem(Long itemId, Long userId) throws ItemNotFoundException {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException("Вещи с id = " + itemId + " не существует."));
-        Booking lastBooking = bookingRepository.findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(item,LocalDateTime.now(),Status.APPROVED)
+        Booking lastBooking = bookingRepository.findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(
+                item,LocalDateTime.now(),Status.APPROVED)
                 .orElse(null);
-        Booking nextBooking = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStartAsc(item, LocalDateTime.now(), Status.APPROVED)
+        Booking nextBooking = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStartAsc(
+                item, LocalDateTime.now(), Status.APPROVED)
                 .orElse(null);
 
         ItemIdDto itemIdDto = itemMapper.toItemIdDto(item);
@@ -95,9 +97,11 @@ public class ItemServiceImpl implements ItemService {
 
         return itemRepository.findByOwnerOrderByIdAsc(owner).stream()
                 .map(item -> {
-                    Booking lastBooking = bookingRepository.findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(item,LocalDateTime.now(),Status.APPROVED)
+                    Booking lastBooking = bookingRepository.findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(
+                            item,LocalDateTime.now(),Status.APPROVED)
                             .orElse(null);
-                    Booking nextBooking = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStartAsc(item, LocalDateTime.now(), Status.APPROVED)
+                    Booking nextBooking = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStartAsc(
+                            item, LocalDateTime.now(), Status.APPROVED)
                             .orElse(null);
 
                     ItemIdDto itemIdDto = itemMapper.toItemIdDto(item);
@@ -112,7 +116,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> readAllItemByParam(String text) {
-        if (text.isEmpty()) return Collections.emptyList();
+        if (text.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return itemRepository.search(text).stream()
                 .map(itemMapper::toItemDto)
@@ -121,7 +127,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId) throws BadOwnerException, ItemNotFoundException {
+    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId)
+            throws BadOwnerException, ItemNotFoundException {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException("Вещи с id = " + itemId + " не существует."));
 

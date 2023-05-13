@@ -7,26 +7,34 @@ import ru.practicum.shareit.user.model.User;
 @Service
 public class UserMapper {
     public UserDto toUserDto(User user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
+        UserDto userDto = new UserDto();
+
+        userDto.setId(user.getId());
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+
+        return userDto;
     }
 
     public User toUser(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
+        User user = new User();
+
+        user.setId(userDto.getId());
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+
+        return user;
     }
 
     public void updateUser(UserDto userDto, User user) {
         String nameUserDto = userDto.getName();
         String emailUserDto = userDto.getEmail();
 
-        if (nameUserDto != null) user.setName(nameUserDto);
-        if (emailUserDto != null) user.setEmail(emailUserDto);
+        if (nameUserDto != null) {
+            user.setName(nameUserDto);
+        }
+        if (emailUserDto != null) {
+            user.setEmail(emailUserDto);
+        }
     }
 }

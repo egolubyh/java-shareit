@@ -54,6 +54,11 @@ public class ItemIdDto {
      */
     private List<CommentDto> comments;
 
+    /**
+     * ид запроса
+     */
+    private Long requestId;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

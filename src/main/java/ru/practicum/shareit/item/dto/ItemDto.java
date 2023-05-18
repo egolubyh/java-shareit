@@ -35,6 +35,11 @@ public class ItemDto {
     @NotNull
     private Boolean available;
 
+    /**
+     * запрос вещи
+     */
+    private Long requestId;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

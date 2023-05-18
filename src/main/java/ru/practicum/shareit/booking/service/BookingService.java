@@ -21,9 +21,9 @@ public interface BookingService {
     BookingDto getBooking(Long bookingId, Long userId)
             throws UserNotFoundException, BookingNotFoundException;
 
-    List<BookingDto> getAllBookingByUser(Long userId, String state)
+    List<BookingDto> getAllBookingByUser(Long userId, String state, Integer from, Integer size)
             throws UserNotFoundException, UnsupportedStatusException;
 
-    List<BookingDto> getAllBookingByOwner(Long ownerId, String state)
+    List<BookingDto> getAllBookingByOwner(Long ownerId, String state, Integer from, Integer size)
             throws UserNotFoundException, UnsupportedStatusException;
 }

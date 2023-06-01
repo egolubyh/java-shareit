@@ -79,7 +79,7 @@ public class BookingServiceImp implements BookingService {
             booking.setStatus(Status.REJECTED);
         }
 
-        return bookingMapper.toBookingDto(booking);
+        return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
     @Override

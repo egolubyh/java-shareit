@@ -5,11 +5,9 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "requests")
@@ -41,17 +39,4 @@ public class ItemRequest {
      */
     @Column(name = "created")
     private LocalDateTime created;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ItemRequest that = (ItemRequest) o;
-        return id.equals(that.id) && description.equals(that.description) && requestor.equals(that.requestor) && created.equals(that.created);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, description, requestor, created);
-    }
 }

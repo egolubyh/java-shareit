@@ -14,71 +14,68 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-    @Mock private UserRepository userRepository;
-    @Mock private UserMapper userMapper;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
     @InjectMocks
     private UserServiceImpl userService;
     @Captor
     ArgumentCaptor<User> argumentCaptor;
 
-    private User user1;
-    private User user2;
+    private User user;
+    private UserDto userDto;
     private Long userId;
 
     @BeforeEach
     void setUp() {
         userId = 1L;
-        user1 = new User();
-        user1.setId(userId);
-        user1.setName("user");
-        user1.setEmail("user@mail.ru");
+        user = new User();
+        user.setId(userId);
+        user.setName("user");
+        user.setEmail("user@mail.ru");
 
-        user2 = new User();
-        user2.setId(2L);
-        user2.setName("user2");
-        user2.setEmail("user2@mail.ru");
+        userDto = new UserDto();
+        userDto.setId(userId);
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
 
-        Mockito
-                .lenient().when(userMapper.toUserDto(Mockito.any(User.class)))
-                .thenCallRealMethod();
-        Mockito
-                .lenient().when(userMapper.toUser(Mockito.any(UserDto.class)))
-                .thenCallRealMethod();
-        Mockito
-                .lenient().doCallRealMethod().when(userMapper).updateUser(Mockito.any(UserDto.class), Mockito.any(User.class));
+        lenient().when(userMapper.toUserDto(any(User.class)))
+                .thenReturn(userDto);
+        lenient().when(userMapper.toUser(any(UserDto.class)))
+                .thenReturn(user);
+        lenient().doCallRealMethod().when(userMapper)
+                .updateUser(any(UserDto.class), Mockito.any(User.class));
     }
 
     @Test
     void addNewUser() {
-        UserDto userDto = userMapper.toUserDto(user1);
-        Mockito
-                .when(userRepository.save(user1))
-                .thenReturn(user1);
+        when(userRepository.save(user))
+                .thenReturn(user);
 
         UserDto actualUser = userService.addNewUser(userDto);
 
-        assertEquals(userDto, actualUser);
-        Mockito.verify(userRepository).save(user1);
+        assertEquals(userDto.getId(), actualUser.getId());
+        verify(userRepository, times(1)).save(user);
     }
 
     @Test
     void findUserById_whenUserFound_thenReturnedUser() throws UserNotFoundException {
-        Mockito
-                .when(userRepository.findById(userId))
-                .thenReturn(Optional.of(user1));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.of(user));
 
-        User actualUser = userMapper.toUser(userService.findUserById(userId));
+        UserDto actualUser = userService.findUserById(userId);
 
-        assertEquals(user1, actualUser);
+        assertEquals(user.getId(), actualUser.getId());
     }
 
     @Test
     void findUserById_whenUserNotFound_thenUserNotFoundExceptionThrow() {
-        Mockito
-                .when(userRepository.findById(userId))
+        when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
@@ -87,45 +84,42 @@ class UserServiceImplTest {
 
     @Test
     void findAllUsers() {
-        UserDto userDto1 = userMapper.toUserDto(user1);
-        UserDto userDto2 = userMapper.toUserDto(user2);
+        List<UserDto> expected = List.of(userDto);
 
-        List<UserDto> expected = List.of(userDto1, userDto2);
-
-        Mockito
-                .when(userRepository.findAll())
-                .thenReturn(List.of(user1, user2));
+        when(userRepository.findAll())
+                .thenReturn(List.of(user));
 
         List<UserDto> result = userService.findAllUsers();
 
-        assertEquals(expected, result);
+        assertEquals(1, result.size());
+        assertEquals(expected.get(0).getId(), result.get(0).getId());
     }
 
     @Test
     void updateUserById_whenUserFound_thenUpdatedOnlyAvailableFields() throws UserNotFoundException {
-        User newUser = new User();
-        newUser.setName("newName");
+        UserDto newUserDto = new UserDto();
+        newUserDto.setName("newName");
 
-        UserDto newUserDto = userMapper.toUserDto(newUser);
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(user));
 
-        Mockito
-                .when(userRepository.findById(userId))
-                .thenReturn(Optional.of(user1));
+        lenient().when(userMapper.toUserDto(any(User.class)))
+                .thenCallRealMethod();
 
         userService.updateUserById(userId, newUserDto);
 
-        Mockito.verify(userRepository).save(argumentCaptor.capture());
+        verify(userMapper).updateUser(newUserDto, user);
+        verify(userRepository).save(argumentCaptor.capture());
         User savedUser = argumentCaptor.getValue();
 
-        assertEquals(user1.getId(), savedUser.getId());
-        assertEquals(user1.getEmail(), savedUser.getEmail());
+        assertEquals(user.getId(), savedUser.getId());
+        assertEquals(user.getEmail(), savedUser.getEmail());
         assertEquals("newName", savedUser.getName());
     }
 
     @Test
     void updateUserById_whenUserNotFound_thenUserNotFoundExceptionThrow() {
-        Mockito
-                .when(userRepository.findById(userId))
+        when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
@@ -136,7 +130,6 @@ class UserServiceImplTest {
     void deleteUserById() {
         userService.deleteUserById(userId);
 
-        Mockito
-                .verify(userRepository).deleteById(Mockito.any());
+        verify(userRepository).deleteById(userId);
     }
 }

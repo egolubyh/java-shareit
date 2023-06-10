@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BookingController.class)
 class BookingControllerITest {
+    private static final String FAIL_BOOKING_MESSAGE = "Возвращаемый Booking не соответствует ожидаемому";
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -49,7 +50,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void addBooking() {
+    void testAddBooking() {
         when(bookingService.addBooking(any(BookingDto.class), anyLong()))
                 .thenReturn(bookingDto);
 
@@ -62,12 +63,12 @@ class BookingControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(bookingDto), result);
+        assertEquals(objectMapper.writeValueAsString(bookingDto), result, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void addBooking_whenBookingNullItemIdField_thenBadRequest() {
+    void testAddBooking_whenBookingNullItemIdField_thenBadRequest() {
         bookingDto.setItemId(null);
 
         mockMvc.perform(post("/bookings")
@@ -81,7 +82,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void addBooking_whenBookingNullStartField_thenBadRequest() {
+    void testAddBooking_whenBookingNullStartField_thenBadRequest() {
         bookingDto.setStart(null);
 
         mockMvc.perform(post("/bookings")
@@ -95,7 +96,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void addBooking_whenBookingNotValidStartField_thenBadRequest() {
+    void testAddBooking_whenBookingNotValidStartField_thenBadRequest() {
         bookingDto.setStart(now.minusDays(1));
 
         mockMvc.perform(post("/bookings")
@@ -109,7 +110,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void addBooking_whenBookingNullEndField_thenBadRequest() {
+    void testAddBooking_whenBookingNullEndField_thenBadRequest() {
         bookingDto.setEnd(null);
 
         mockMvc.perform(post("/bookings")
@@ -123,7 +124,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void addBooking_whenBookingNotValidEndField_thenBadRequest() {
+    void testAddBooking_whenBookingNotValidEndField_thenBadRequest() {
         bookingDto.setEnd(now.minusDays(1));
 
         mockMvc.perform(post("/bookings")
@@ -137,7 +138,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void getBooking() {
+    void testGetBooking() {
         when(bookingService.getBooking(anyLong(), anyLong()))
                 .thenReturn(bookingDto);
 
@@ -148,12 +149,12 @@ class BookingControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(bookingDto), result);
+        assertEquals(objectMapper.writeValueAsString(bookingDto), result, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void getAllBookingByUser() {
+    void testGetAllBookingByUser() {
         List<BookingDto> expectedList = List.of(bookingDto);
 
         when(bookingService.getAllBookingByUser(anyLong(), anyString(), anyInt(), anyInt()))
@@ -169,12 +170,12 @@ class BookingControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void getAllBookingByUser_whenParamFromIsLessZero_thenServerError() {
+    void testGetAllBookingByUser_whenParamFromIsLessZero_thenServerError() {
         mockMvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "ALL")
@@ -187,7 +188,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void getAllBookingByUser_whenParamSizeIsLessOne_thenServerError() {
+    void testGetAllBookingByUser_whenParamSizeIsLessOne_thenServerError() {
         mockMvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "ALL")
@@ -200,7 +201,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void getAllBookingByOwner() {
+    void testGetAllBookingByOwner() {
         List<BookingDto> expectedList = List.of(bookingDto);
 
         when(bookingService.getAllBookingByOwner(anyLong(), anyString(), anyInt(), anyInt()))
@@ -216,12 +217,12 @@ class BookingControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void getAllBookingByOwner_whenParamFromIsLessZero_thenServerError() {
+    void testGetAllBookingByOwner_whenParamFromIsLessZero_thenServerError() {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "ALL")
@@ -234,7 +235,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void getAllBookingByOwner_whenParamSizeIsLessOne_thenServerError() {
+    void testGetAllBookingByOwner_whenParamSizeIsLessOne_thenServerError() {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "ALL")
@@ -247,7 +248,7 @@ class BookingControllerITest {
 
     @SneakyThrows
     @Test
-    void setApprove() {
+    void testSetApprove() {
         when(bookingService.updateApprove(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(bookingDto);
 
@@ -259,6 +260,6 @@ class BookingControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(bookingDto), result);
+        assertEquals(objectMapper.writeValueAsString(bookingDto), result, FAIL_BOOKING_MESSAGE);
     }
 }

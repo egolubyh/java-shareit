@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class BookingRepositoryTest {
+    private static final String FAIL_SIZE_MESSAGE = "Неверный размер возвращаемого списка";
+    private static final String FAIL_BOOKING_MESSAGE = "Возвращаемый Booking не соответствует ожидаемому";
+    private static final String FAIL_EMPTY_OPTIONAL_MESSAGE = "Возвращен пустой Optional";
     private static final LocalDateTime NOW = LocalDateTime.now();
     private static final PageRequest PAGE_REQUEST = PageRequest.of(0, 10);
     @Autowired
@@ -117,133 +120,133 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void findBookingByBooker() {
+    void testFindBookingByBooker() {
         List<Booking> result = bookingRepository.findBookingByBooker(
                 user2, PAGE_REQUEST).getContent();
 
-        assertEquals(1, result.size());
-        assertEquals(booking1, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking1, result.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByBookerAndStatus() {
+    void testFindBookingByBookerAndStatus() {
         List<Booking> result = bookingRepository.findBookingByBookerAndStatus(
                 user1, Status.APPROVED, PAGE_REQUEST).getContent();
 
-        assertEquals(3, result.size());
-        assertEquals(booking2, result.get(0));
-        assertEquals(booking3, result.get(1));
-        assertEquals(booking4, result.get(2));
+        assertEquals(3, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking2, result.get(0), FAIL_BOOKING_MESSAGE);
+        assertEquals(booking3, result.get(1), FAIL_BOOKING_MESSAGE);
+        assertEquals(booking4, result.get(2), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByBookerAndStartGreaterThan() {
+    void testFindBookingByBookerAndStartGreaterThan() {
         List<Booking> result = bookingRepository.findBookingByBookerAndStartGreaterThan(
                 user1, NOW.plusDays(10), PAGE_REQUEST).getContent();
 
-        assertEquals(1, result.size());
-        assertEquals(booking4, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking4, result.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByBookerAndEndBefore() {
+    void testFindBookingByBookerAndEndBefore() {
         List<Booking> result = bookingRepository.findBookingByBookerAndEndBefore(
                 user1, NOW.plusDays(2), PAGE_REQUEST).getContent();
 
-        assertEquals(1, result.size());
-        assertEquals(booking2, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking2, result.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByBookerAndStartBeforeAndEndAfter() {
+    void testFindBookingByBookerAndStartBeforeAndEndAfter() {
         List<Booking> result = bookingRepository.findBookingByBookerAndStartBeforeAndEndAfter(
                 user1, NOW.plusHours(12), NOW.plusHours(12), PAGE_REQUEST).getContent();
 
-        assertEquals(1, result.size());
-        assertEquals(booking2, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking2, result.get(0), FAIL_BOOKING_MESSAGE);
      }
 
     @Test
-    void findBookingByItem_OwnerAndStatus() {
+    void testFindBookingByItem_OwnerAndStatus() {
         List<Booking> result = bookingRepository.findBookingByItem_OwnerAndStatus(
                 user2, Status.APPROVED, PAGE_REQUEST).getContent();
 
-        assertEquals(1, result.size());
-        assertEquals(booking2, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking2, result.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByItem_Owner() {
+    void testFindBookingByItem_Owner() {
         List<Booking> result = bookingRepository.findBookingByItem_Owner(
                 user1, PAGE_REQUEST).getContent();
 
-        assertEquals(3, result.size());
-        assertEquals(booking1, result.get(0));
-        assertEquals(booking3, result.get(1));
-        assertEquals(booking4, result.get(2));
+        assertEquals(3, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking1, result.get(0), FAIL_BOOKING_MESSAGE);
+        assertEquals(booking3, result.get(1), FAIL_BOOKING_MESSAGE);
+        assertEquals(booking4, result.get(2), FAIL_BOOKING_MESSAGE);
      }
 
     @Test
-    void findBookingByItem_OwnerAndStartGreaterThan() {
+    void testFindBookingByItem_OwnerAndStartGreaterThan() {
         List<Booking> result = bookingRepository.findBookingByItem_OwnerAndStartGreaterThan(
                 user1,NOW.plusDays(1), PAGE_REQUEST).getContent();
 
-        assertEquals(2, result.size());
-        assertEquals(booking3, result.get(0));
-        assertEquals(booking4, result.get(1));
+        assertEquals(2, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking3, result.get(0), FAIL_BOOKING_MESSAGE);
+        assertEquals(booking4, result.get(1), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByItem_OwnerAndStartBeforeAndEndAfter() {
+    void testFindBookingByItem_OwnerAndStartBeforeAndEndAfter() {
         List<Booking> result = bookingRepository.findBookingByItem_OwnerAndStartBeforeAndEndAfter(
                 user1, NOW.plusHours(12), NOW.plusHours(12), PAGE_REQUEST).getContent();
 
-        assertEquals(1, result.size());
-        assertEquals(booking1, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking1, result.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByItem_OwnerAndEndBefore() {
+    void testFindBookingByItem_OwnerAndEndBefore() {
         List<Booking> result = bookingRepository.findBookingByItem_OwnerAndEndBefore(
                 user1, NOW.plusDays(5), PAGE_REQUEST).getContent();
 
-        assertEquals(2, result.size());
-        assertEquals(booking1, result.get(0));
-        assertEquals(booking3, result.get(1));
+        assertEquals(2, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(booking1, result.get(0), FAIL_BOOKING_MESSAGE);
+        assertEquals(booking3, result.get(1), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findBookingByIdAndUser() {
+    void testFindBookingByIdAndUser() {
         Optional<Booking> result = bookingRepository.findBookingByIdAndUser(booking2.getId(), user1);
 
-        assertTrue(result.isPresent());
-        assertEquals(booking2, result.get());
+        assertTrue(result.isPresent(), FAIL_EMPTY_OPTIONAL_MESSAGE);
+        assertEquals(booking2, result.get(), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findFirstByBookerAndItemAndStatusAndEndBefore() {
+    void testFindFirstByBookerAndItemAndStatusAndEndBefore() {
         Optional<Booking> result = bookingRepository.findFirstByBookerAndItemAndStatusAndEndBefore(
                 user1, item2, Status.APPROVED, NOW.plusDays(5));
 
-        assertTrue(result.isPresent());
-        assertEquals(booking2, result.get());
+        assertTrue(result.isPresent(), FAIL_EMPTY_OPTIONAL_MESSAGE);
+        assertEquals(booking2, result.get(), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findFirstByItemAndStartBeforeAndStatusOrderByStartDesc() {
+    void testFindFirstByItemAndStartBeforeAndStatusOrderByStartDesc() {
         Optional<Booking> result = bookingRepository.findFirstByItemAndStartBeforeAndStatusOrderByStartDesc(
                 item3, NOW.plusDays(13),Status.APPROVED);
 
-        assertTrue(result.isPresent());
-        assertEquals(booking4, result.get());
+        assertTrue(result.isPresent(), FAIL_EMPTY_OPTIONAL_MESSAGE);
+        assertEquals(booking4, result.get(), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void findFirstByItemAndStartAfterAndStatusOrderByStartAsc() {
+    void testFindFirstByItemAndStartAfterAndStatusOrderByStartAsc() {
         Optional<Booking> result = bookingRepository.findFirstByItemAndStartAfterAndStatusOrderByStartAsc(
                 item3, NOW, Status.APPROVED);
 
-        assertTrue(result.isPresent());
-        assertEquals(booking3, result.get());
+        assertTrue(result.isPresent(), FAIL_EMPTY_OPTIONAL_MESSAGE);
+        assertEquals(booking3, result.get(), FAIL_BOOKING_MESSAGE);
     }
 }

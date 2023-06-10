@@ -17,6 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class ItemRequestRepositoryTest {
+    private static final String FAIL_SIZE_MESSAGE = "Возвращаемый список имеет размер не соответствует ожидаемому";
+    private static final String FAIL_REQUESTOR_MESSAGE = "Возвращаемый requestor не соответствует ожидаемому";
+    private static final String FAIL_ITEM_REQUEST_MESSAGE = "Возвращаемый itemRequest не соответствует ожидаемому";
     @Autowired
     private ItemRequestRepository requestRepository;
     @Autowired
@@ -68,21 +71,21 @@ class ItemRequestRepositoryTest {
     }
 
     @Test
-    void findByRequestorOrderByCreatedDesc() {
+    void testFindByRequestorOrderByCreatedDesc() {
         List<ItemRequest> results = requestRepository.findByRequestorOrderByCreatedDesc(user1);
 
-        assertEquals(2, results.size());
-        assertEquals(itemRequest1.getId(), results.get(1).getId());
-        assertEquals(itemRequest2.getId(), results.get(0).getId());
+        assertEquals(2, results.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(itemRequest1.getId(), results.get(1).getId(), FAIL_ITEM_REQUEST_MESSAGE);
+        assertEquals(itemRequest2.getId(), results.get(0).getId(), FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @Test
-    void findAllByRequestorNot() {
+    void testFindAllByRequestorNot() {
         List<ItemRequest> results = requestRepository.findAllByRequestorNot(
                 user1, PageRequest.of(0,10)).getContent();
 
-        assertEquals(1, results.size());
-        assertEquals(itemRequest3.getId(), results.get(0).getId());
-        assertEquals(user2, results.get(0).getRequestor());
+        assertEquals(1, results.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(itemRequest3.getId(), results.get(0).getId(), FAIL_ITEM_REQUEST_MESSAGE);
+        assertEquals(user2, results.get(0).getRequestor(), FAIL_REQUESTOR_MESSAGE);
     }
 }

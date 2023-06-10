@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ItemRequestController.class)
 class ItemRequestControllerITest {
+    private static final String FAIL_ITEM_REQUEST_MESSAGE = "Возвращаемый itemRequest не соответствует ожидаемому";
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -46,7 +47,7 @@ class ItemRequestControllerITest {
 
     @SneakyThrows
     @Test
-    void addNewItemRequest() {
+    void testAddNewItemRequest() {
         when(itemRequestService.createItemRequest(any(ItemRequestDto.class), anyLong()))
                 .thenReturn(itemRequestDto);
 
@@ -59,12 +60,12 @@ class ItemRequestControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(itemRequestDto), result);
+        assertEquals(objectMapper.writeValueAsString(itemRequestDto), result, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void addNewItemRequest_whenItemRequestNotValidDescriptionField_thenBadRequest() {
+    void testAddNewItemRequest_whenItemRequestNotValidDescriptionField_thenBadRequest() {
         itemRequestDto.setDescription("");
 
         mockMvc.perform(post("/requests")
@@ -78,7 +79,7 @@ class ItemRequestControllerITest {
 
     @SneakyThrows
     @Test
-    void findItemRequestsByUser() {
+    void testFindItemRequestsByUser() {
         List<ItemRequestDto> expectedList = List.of(itemRequestDto);
 
         when(itemRequestService.readItemRequestByUser(anyLong()))
@@ -91,12 +92,12 @@ class ItemRequestControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findItemRequestById() {
+    void testFindItemRequestById() {
         when(itemRequestService.readItemRequestById(anyLong(), anyLong()))
                 .thenReturn(itemRequestDto);
 
@@ -109,12 +110,12 @@ class ItemRequestControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(itemRequestDto), result);
+        assertEquals(objectMapper.writeValueAsString(itemRequestDto), result, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findAllItemRequest() {
+    void testFindAllItemRequest() {
         List<ItemRequestDto> expectedList = List.of(itemRequestDto);
 
         when(itemRequestService.readAll(anyLong(),anyInt(),anyInt()))
@@ -129,6 +130,6 @@ class ItemRequestControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_ITEM_REQUEST_MESSAGE);
     }
 }

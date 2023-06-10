@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookingControllerTest {
+    private static final String FAIL_BOOKING_MESSAGE = "Возвращаемый Booking не соответствует ожидаемому";
     @Mock
     private BookingService bookingService;
 
@@ -40,58 +41,58 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void addBooking() {
+    void testAddBooking() {
         when(bookingService.addBooking(any(BookingDto.class), anyLong()))
                 .thenReturn(bookingDto);
 
         BookingDto actual = bookingController.addBooking(bookingDto, 1L);
 
-        assertEquals(bookingDto, actual);
+        assertEquals(bookingDto, actual, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void getBooking() {
+    void testGetBooking() {
         when(bookingService.getBooking(anyLong(), anyLong()))
                 .thenReturn(bookingDto);
 
         BookingDto actual = bookingController.getBooking(anyLong(),anyLong());
 
-        assertEquals(bookingDto, actual);
+        assertEquals(bookingDto, actual, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void getAllBookingByUser() {
+    void testGetAllBookingByUser() {
         List<BookingDto> expectedList = List.of(bookingDto);
         when(bookingService.getAllBookingByUser(anyLong(), anyString(),anyInt(),anyInt()))
                 .thenReturn(expectedList);
 
         List<BookingDto> actual = bookingController.getAllBookingByUser(anyLong(), anyString(),anyInt(),anyInt());
 
-        assertEquals(expectedList, actual);
+        assertEquals(expectedList, actual, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void getAllBookingByOwner() {
+    void testGetAllBookingByOwner() {
         List<BookingDto> expectedList = List.of(bookingDto);
         when(bookingService.getAllBookingByOwner(anyLong(), anyString(),anyInt(),anyInt()))
                 .thenReturn(expectedList);
 
         List<BookingDto> actual = bookingController.getAllBookingByOwner(anyLong(), anyString(),anyInt(),anyInt());
 
-        assertEquals(expectedList, actual);
+        assertEquals(expectedList, actual, FAIL_BOOKING_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void setApprove() {
+    void testSetApprove() {
         when(bookingService.updateApprove(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(bookingDto);
 
         BookingDto actual = bookingController.setApprove(anyLong(), anyLong(), anyBoolean());
 
-        assertEquals(bookingDto, actual);
+        assertEquals(bookingDto, actual, FAIL_BOOKING_MESSAGE);
     }
 }

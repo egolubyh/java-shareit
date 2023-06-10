@@ -26,6 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemMapperTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_NAME_MESSAGE = "Возвращаемый name не соответствует ожидаемому";
+    private static final String FAIL_DESCRIPTION_MESSAGE = "Возвращаемый description не соответствует ожидаемому";
+    private static final String FAIL_AVAILABLE_MESSAGE = "Возвращаемый available не соответствует ожидаемому";
+    private static final String FAIL_ITEM_REQUEST_MESSAGE = "Возвращаемый ItemRequest не соответствует ожидаемому";
+    private static final String FAIL_COMMENTS_MESSAGE = "Возвращаемый список comments не соответствует ожидаемому";
+    private static final String FAIL_REQUEST_MESSAGE = "Возвращаемый список request не соответствует ожидаемому";
     @Mock private CommentRepository commentRepository;
     @Mock private ItemRequestRepository itemRequestRepository;
     @Mock private CommentMapper commentMapper;
@@ -80,48 +87,48 @@ class ItemMapperTest {
     }
 
     @Test
-    void toItemDto() {
+    void testToItemDto() {
         ItemDto result = itemMapper.toItemDto(item);
 
         assertNotNull(result);
-        assertEquals(item.getId(), result.getId());
-        assertEquals(item.getName(), result.getName());
-        assertEquals(item.getDescription(), result.getDescription());
-        assertEquals(item.getAvailable(), result.getAvailable());
-        assertEquals(item.getItemRequest().getId(), result.getRequestId());
+        assertEquals(item.getId(), result.getId(), FAIL_ID_MESSAGE);
+        assertEquals(item.getName(), result.getName(), FAIL_NAME_MESSAGE);
+        assertEquals(item.getDescription(), result.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(item.getAvailable(), result.getAvailable(), FAIL_AVAILABLE_MESSAGE);
+        assertEquals(item.getItemRequest().getId(), result.getRequestId(), FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @Test
-    void toItemIdDto() {
+    void testToItemIdDto() {
         ItemIdDto result = itemMapper.toItemIdDto(item);
         List<Long> commentIds = commentRepository.findByItem(item).stream()
                 .map(Comment::getId)
                 .collect(Collectors.toList());
 
         assertNotNull(result);
-        assertEquals(item.getId(), result.getId());
-        assertEquals(item.getName(), result.getName());
-        assertEquals(item.getDescription(), result.getDescription());
-        assertEquals(item.getAvailable(), result.getAvailable());
-        assertEquals(item.getItemRequest().getId(), result.getRequestId());
+        assertEquals(item.getId(), result.getId(), FAIL_ID_MESSAGE);
+        assertEquals(item.getName(), result.getName(), FAIL_NAME_MESSAGE);
+        assertEquals(item.getDescription(), result.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(item.getAvailable(), result.getAvailable(), FAIL_AVAILABLE_MESSAGE);
+        assertEquals(item.getItemRequest().getId(), result.getRequestId(), FAIL_ITEM_REQUEST_MESSAGE);
         assertEquals(commentIds, result.getComments().stream()
                 .map(CommentDto::getId)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()), FAIL_COMMENTS_MESSAGE);
     }
 
     @Test
-    void toItem() {
+    void testToItem() {
         Item result = itemMapper.toItem(itemDto);
 
         assertNotNull(result);
-        assertEquals(itemDto.getName(), result.getName());
-        assertEquals(itemDto.getDescription(), result.getDescription());
-        assertEquals(itemDto.getAvailable(), result.getAvailable());
-        assertEquals(itemDto.getRequestId(), result.getItemRequest().getId());
+        assertEquals(itemDto.getName(), result.getName(), FAIL_NAME_MESSAGE);
+        assertEquals(itemDto.getDescription(), result.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(itemDto.getAvailable(), result.getAvailable(), FAIL_AVAILABLE_MESSAGE);
+        assertEquals(itemDto.getRequestId(), result.getItemRequest().getId(), FAIL_REQUEST_MESSAGE);
     }
 
     @Test
-    void updateItemName() {
+    void testUpdateItemName() {
         ItemDto updateItemDto = new ItemDto();
         updateItemDto.setName("update");
 
@@ -129,11 +136,11 @@ class ItemMapperTest {
 
         assertNotNull(item);
         assertNotNull(updateItemDto);
-        assertEquals(updateItemDto.getName(), item.getName());
+        assertEquals(updateItemDto.getName(), item.getName(), FAIL_NAME_MESSAGE);
     }
 
     @Test
-    void updateItemDescription() {
+    void testUpdateItemDescription() {
         ItemDto updateItemDto = new ItemDto();
         updateItemDto.setDescription("updateDesc");
 
@@ -141,11 +148,11 @@ class ItemMapperTest {
 
         assertNotNull(item);
         assertNotNull(updateItemDto);
-        assertEquals(updateItemDto.getDescription(), item.getDescription());
+        assertEquals(updateItemDto.getDescription(), item.getDescription(), FAIL_DESCRIPTION_MESSAGE);
     }
 
     @Test
-    void updateItemAvailable() {
+    void testUpdateItemAvailable() {
         ItemDto updateItemDto = new ItemDto();
         updateItemDto.setAvailable(false);
 
@@ -153,6 +160,6 @@ class ItemMapperTest {
 
         assertNotNull(item);
         assertNotNull(updateItemDto);
-        assertEquals(updateItemDto.getAvailable(), item.getAvailable());
+        assertEquals(updateItemDto.getAvailable(), item.getAvailable(), FAIL_AVAILABLE_MESSAGE);
     }
 }

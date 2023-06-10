@@ -36,6 +36,17 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_TEXT_MESSAGE = "Возвращаемый text не соответствует ожидаемому";
+    private static final String FAIL_AUTHOR_MESSAGE = "Возвращаемый author не соответствует ожидаемому";
+    private static final String FAIL_ITEM_MESSAGE = "Возвращаемый item не соответствует ожидаемому";
+    private static final String FAIL_CREATED_MESSAGE = "Возвращаемый created не соответствует ожидаемому";
+    private static final String FAIL_NAME_MESSAGE = "Возвращаемый name не соответствует ожидаемому";
+    private static final String FAIL_DESCRIPTION_MESSAGE = "Возвращаемый description не соответствует ожидаемому";
+    private static final String FAIL_AVAILABLE_MESSAGE = "Возвращаемый available не соответствует ожидаемому";
+    private static final String FAIL_OWNER_MESSAGE = "Возвращаемый owner не соответствует ожидаемому";
+    private static final String FAIL_REQUEST_MESSAGE = "Возвращаемый request не соответствует ожидаемому";
+    private static final String FAIL_COMMENTS_MESSAGE = "Возвращаемый comments не соответствует ожидаемому";
     @Mock private ItemMapper itemMapper;
     @Mock private CommentMapper commentMapper;
     @Mock private ItemRepository itemRepository;
@@ -103,7 +114,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addNewItem_whenOwnerIdFound_thenSaveNewItem() throws UserNotFoundException {
+    void testAddNewItem_whenOwnerIdFound_thenSaveNewItem() throws UserNotFoundException {
         ItemDto itemDto = itemMapper.toItemDto(item);
         when(userRepository.findById(ownerId))
                 .thenReturn(Optional.of(owner));
@@ -114,14 +125,14 @@ class ItemServiceImplTest {
 
         Item actualItem = itemArgumentCaptor.getValue();
 
-        assertEquals(item.getName(), actualItem.getName());
-        assertEquals(item.getDescription(), actualItem.getDescription());
-        assertEquals(item.getAvailable(), item.getAvailable());
-        assertEquals(item.getOwner(), item.getOwner());
+        assertEquals(item.getName(), actualItem.getName(), FAIL_NAME_MESSAGE);
+        assertEquals(item.getDescription(), actualItem.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(item.getAvailable(), item.getAvailable(), FAIL_AVAILABLE_MESSAGE);
+        assertEquals(item.getOwner(), item.getOwner(), FAIL_OWNER_MESSAGE);
     }
 
     @Test
-    void addNewItem_whenOwnerIdNotFound_thenUserNotFoundExceptionThrow() {
+    void testAddNewItem_whenOwnerIdNotFound_thenUserNotFoundExceptionThrow() {
         ItemDto itemDto = itemMapper.toItemDto(item);
         when(userRepository.findById(ownerId))
                 .thenReturn(Optional.empty());
@@ -131,7 +142,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addNewComment_whenUserIdAndItemIdFound_thenSaveNewItem() throws UserNotFoundException, BookingNotFoundException, ItemNotFoundException {
+    void testAddNewComment_whenUserIdAndItemIdFound_thenSaveNewItem() throws UserNotFoundException, BookingNotFoundException, ItemNotFoundException {
         CommentDto commentDto = commentMapper.toCommentDto(comment);
 
         lenient().when(userRepository.findById(userId))
@@ -147,17 +158,17 @@ class ItemServiceImplTest {
         verify(commentRepository).save(commentArgumentCaptor.capture());
         Comment actualComment = commentArgumentCaptor.getValue();
 
-        assertEquals(comment.getId(), actualComment.getId());
-        assertEquals(comment.getText(), actualComment.getText());
-        assertEquals(comment.getAuthor(), actualComment.getAuthor());
-        assertEquals(comment.getItem(), actualComment.getItem());
+        assertEquals(comment.getId(), actualComment.getId(), FAIL_ID_MESSAGE);
+        assertEquals(comment.getText(), actualComment.getText(), FAIL_TEXT_MESSAGE);
+        assertEquals(comment.getAuthor(), actualComment.getAuthor(), FAIL_AUTHOR_MESSAGE);
+        assertEquals(comment.getItem(), actualComment.getItem(), FAIL_ITEM_MESSAGE);
         assertEquals(comment.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-d_H:m")),
-                actualComment.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-d_H:m")));
+                actualComment.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-d_H:m")), FAIL_CREATED_MESSAGE);
 
     }
 
     @Test
-    void addNewComment_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
+    void testAddNewComment_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
         CommentDto commentDto = commentMapper.toCommentDto(comment);
         lenient().when(userRepository.findById(userId))
                 .thenReturn(Optional.empty());
@@ -169,7 +180,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addNewComment_whenItemIdNotFound_thenItemNotFoundExceptionThrow() {
+    void testAddNewComment_whenItemIdNotFound_thenItemNotFoundExceptionThrow() {
         CommentDto commentDto = commentMapper.toCommentDto(comment);
         lenient().when(userRepository.findById(userId))
                 .thenReturn(Optional.of(user));
@@ -181,7 +192,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addNewComment_whenBookingNotFound_thenBookingNotFoundExceptionThrow() {
+    void testAddNewComment_whenBookingNotFound_thenBookingNotFoundExceptionThrow() {
         CommentDto commentDto = commentMapper.toCommentDto(comment);
         lenient().when(userRepository.findById(userId))
                 .thenReturn(Optional.of(user));
@@ -196,7 +207,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void readItem_whenItemIdFound_thenReturnedItem() throws ItemNotFoundException {
+    void testReadItem_whenItemIdFound_thenReturnedItem() throws ItemNotFoundException {
         lenient().when(commentRepository.findByItem(any(Item.class)))
                 .thenReturn(List.of(comment));
 
@@ -206,17 +217,17 @@ class ItemServiceImplTest {
         ItemIdDto expected = itemMapper.toItemIdDto(item);
         ItemIdDto actualItemIdDto = itemService.readItem(item.getId(), userId);
 
-        assertEquals(expected.getId(), actualItemIdDto.getId());
-        assertEquals(expected.getName(), actualItemIdDto.getName());
-        assertEquals(expected.getDescription(), actualItemIdDto.getDescription());
-        assertEquals(expected.getAvailable(), actualItemIdDto.getAvailable());
-        assertEquals(expected.getRequestId(), actualItemIdDto.getRequestId());
+        assertEquals(expected.getId(), actualItemIdDto.getId(), FAIL_ID_MESSAGE);
+        assertEquals(expected.getName(), actualItemIdDto.getName(), FAIL_NAME_MESSAGE);
+        assertEquals(expected.getDescription(), actualItemIdDto.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(expected.getAvailable(), actualItemIdDto.getAvailable(), FAIL_AVAILABLE_MESSAGE);
+        assertEquals(expected.getRequestId(), actualItemIdDto.getRequestId(), FAIL_REQUEST_MESSAGE);
         assertEquals(expected.getComments().get(0).getId(),
-                actualItemIdDto.getComments().get(0).getId());
+                actualItemIdDto.getComments().get(0).getId(), FAIL_COMMENTS_MESSAGE);
     }
 
     @Test
-    void readItem_whenItemIdNotFound_thenItemNotFoundExceptionThrow() {
+    void testReadItem_whenItemIdNotFound_thenItemNotFoundExceptionThrow() {
         lenient().when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -225,7 +236,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void readAllItemByOwner_whenOwnerIdFound_thenReturnedItems() throws UserNotFoundException {
+    void testReadAllItemByOwner_whenOwnerIdFound_thenReturnedItems() throws UserNotFoundException {
         List<ItemIdDto> expected = List.of(itemMapper.toItemIdDto(item));
 
         lenient().when(userRepository.findById(anyLong()))
@@ -236,11 +247,11 @@ class ItemServiceImplTest {
 
         List<ItemIdDto> actual = itemService.readAllItemByOwner(ownerId);
 
-        assertEquals(expected.get(0).getId(), actual.get(0).getId());
+        assertEquals(expected.get(0).getId(), actual.get(0).getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void readAllItemByOwner_whenOwnerIdNotFound_thenUserNotFoundExceptionThrows() {
+    void testReadAllItemByOwner_whenOwnerIdNotFound_thenUserNotFoundExceptionThrows() {
         lenient().when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -249,7 +260,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void readAllItemByParam_whenParamIsNotEmpty_thenReturnedItems() {
+    void testReadAllItemByParam_whenParamIsNotEmpty_thenReturnedItems() {
         List<ItemDto> expected = List.of(itemMapper.toItemDto(item));
 
         lenient().when(itemRepository.search(anyString()))
@@ -257,11 +268,11 @@ class ItemServiceImplTest {
 
         List<ItemDto> actual = itemService.readAllItemByParam("text");
 
-        assertEquals(expected.get(0).getId(), actual.get(0).getId());
+        assertEquals(expected.get(0).getId(), actual.get(0).getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void readAllItemByParam_whenParamIsEmpty_thenReturnedEmptyList() {
+    void testReadAllItemByParam_whenParamIsEmpty_thenReturnedEmptyList() {
         List<ItemDto> expected = Collections.emptyList();
 
         lenient().when(itemRepository.search(""))
@@ -269,11 +280,11 @@ class ItemServiceImplTest {
 
         List<ItemDto> actual = itemService.readAllItemByParam("");
 
-        assertEquals(expected, actual);
+        assertEquals(expected, actual, FAIL_ITEM_MESSAGE);
     }
 
     @Test
-    void updateItem_whenItemIdAndOwnerIdFound_thenReturnedItem() throws BadOwnerException, ItemNotFoundException {
+    void testUpdateItem_whenItemIdAndOwnerIdFound_thenReturnedItem() throws BadOwnerException, ItemNotFoundException {
         ItemDto itemDto = itemMapper.toItemDto(item);
         itemDto.setName("updateName");
         itemDto.setDescription("updateDesc");
@@ -286,13 +297,13 @@ class ItemServiceImplTest {
         verify(itemRepository).save(itemArgumentCaptor.capture());
         Item actual = itemArgumentCaptor.getValue();
 
-        assertEquals(itemDto.getName(), actual.getName());
-        assertEquals(itemDto.getDescription(), actual.getDescription());
+        assertEquals(itemDto.getName(), actual.getName(), FAIL_NAME_MESSAGE);
+        assertEquals(itemDto.getDescription(), actual.getDescription(), FAIL_DESCRIPTION_MESSAGE);
 
     }
 
     @Test
-    void updateItem_whenItemIdNotFound_thenItemNotFoundExceptionThrow() {
+    void testUpdateItem_whenItemIdNotFound_thenItemNotFoundExceptionThrow() {
         lenient().when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -301,7 +312,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_whenBadOwner_thenBadOwnerExceptionThrow() {
+    void testUpdateItem_whenBadOwner_thenBadOwnerExceptionThrow() {
         lenient().when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.of(item));
 

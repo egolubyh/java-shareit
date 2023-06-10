@@ -28,6 +28,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestServiceImpTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_SIZE_MESSAGE = "Возвращаемый список имеет размер не соответствует ожидаемому";
+    private static final String FAIL_ITEM_REQUEST_MESSAGE = "Возвращаемый itemRequest не соответствует ожидаемому";
     @Mock private ItemRequestRepository itemRequestRepository;
     @Mock private UserRepository userRepository;
     @Mock private ItemRepository itemRepository;
@@ -77,7 +80,7 @@ class ItemRequestServiceImpTest {
     }
 
     @Test
-    void createItemRequest() throws UserNotFoundException {
+    void testCreateItemRequest() throws UserNotFoundException {
         lenient().when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         lenient().when(itemRepository.findById(anyLong()))
@@ -89,12 +92,12 @@ class ItemRequestServiceImpTest {
 
         verify(itemRequestRepository).save(argumentCaptor.capture());
 
-        assertEquals(itemRequest.getId(), argumentCaptor.getValue().getId());
-        assertEquals(itemRequest.getId(), actual.getId());
+        assertEquals(itemRequest.getId(), argumentCaptor.getValue().getId(), FAIL_ID_MESSAGE);
+        assertEquals(itemRequest.getId(), actual.getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void readItemRequestByUser_whenUserIdFound_thenReturnItemRequestDto() throws UserNotFoundException {
+    void testReadItemRequestByUser_whenUserIdFound_thenReturnItemRequestDto() throws UserNotFoundException {
         lenient().when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         lenient().when(itemRequestRepository.findByRequestorOrderByCreatedDesc(user))
@@ -102,12 +105,12 @@ class ItemRequestServiceImpTest {
 
         List<ItemRequestDto> result = itemRequestService.readItemRequestByUser(userId);
 
-        assertEquals(itemRequest.getId(), result.get(0).getId());
-        assertEquals(1, result.size());
+        assertEquals(itemRequest.getId(), result.get(0).getId(), FAIL_ID_MESSAGE);
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
     }
 
     @Test
-    void readItemRequestByUser_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
+    void testReadItemRequestByUser_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
         lenient().when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -116,7 +119,7 @@ class ItemRequestServiceImpTest {
     }
 
     @Test
-    void readItemRequestById_whenUserIdAndRequestIdFound_thenReturnedItemRequestDto() throws UserNotFoundException, RequestNotFoundException {
+    void testReadItemRequestById_whenUserIdAndRequestIdFound_thenReturnedItemRequestDto() throws UserNotFoundException, RequestNotFoundException {
         lenient().when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
 
@@ -125,11 +128,11 @@ class ItemRequestServiceImpTest {
 
         ItemRequestDto actual = itemRequestService.readItemRequestById(userId, itemRequest.getId());
 
-        assertEquals(itemRequest.getId(), actual.getId());
+        assertEquals(itemRequest.getId(), actual.getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void readItemRequestById_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
+    void testReadItemRequestById_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
         lenient().when(userRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -141,7 +144,7 @@ class ItemRequestServiceImpTest {
     }
 
     @Test
-    void readItemRequestById_whenRequestIdNotFound_thenRequestNotFoundExceptionThrow() {
+    void testReadItemRequestById_whenRequestIdNotFound_thenRequestNotFoundExceptionThrow() {
         lenient().when(userRepository.findById(userId))
                 .thenReturn(Optional.of(user));
 
@@ -153,7 +156,7 @@ class ItemRequestServiceImpTest {
     }
 
     @Test
-    void readAll_whenUserIdFound_thenReturnedItemRequestDto() throws UserNotFoundException {
+    void testReadAll_whenUserIdFound_thenReturnedItemRequestDto() throws UserNotFoundException {
         Page<ItemRequest> itemRequests = new PageImpl<>(List.of(itemRequest));
 
         lenient().when(userRepository.findById(userId))
@@ -166,11 +169,11 @@ class ItemRequestServiceImpTest {
                 .collect(Collectors.toList());
         List<ItemRequestDto> result = itemRequestService.readAll(userId,0,10);
 
-        assertEquals(actual,result);
+        assertEquals(actual,result, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @Test
-    void readAll_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
+    void testReadAll_whenUserIdNotFound_thenUserNotFoundExceptionThrow() {
         lenient().when(userRepository.findById(userId))
                 .thenReturn(Optional.empty());
 

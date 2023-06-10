@@ -18,6 +18,10 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_SIZE_MESSAGE = "Возвращаемый список имеет размер не соответствует ожидаемому";
+    private static final String FAIL_EMAIL_MESSAGE = "Возвращаемый email не соответствует ожидаемому";
+    private static final String FAIL_NAME_MESSAGE = "Возвращаемый name не соответствует ожидаемому";
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -53,28 +57,28 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addNewUser() {
+    void testAddNewUser() {
         when(userRepository.save(user))
                 .thenReturn(user);
 
         UserDto actualUser = userService.addNewUser(userDto);
 
-        assertEquals(userDto.getId(), actualUser.getId());
+        assertEquals(userDto.getId(), actualUser.getId(), FAIL_ID_MESSAGE);
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
-    void findUserById_whenUserFound_thenReturnedUser() throws UserNotFoundException {
+    void testFindUserById_whenUserFound_thenReturnedUser() throws UserNotFoundException {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
 
         UserDto actualUser = userService.findUserById(userId);
 
-        assertEquals(user.getId(), actualUser.getId());
+        assertEquals(user.getId(), actualUser.getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void findUserById_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testFindUserById_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -83,7 +87,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAllUsers() {
+    void testFindAllUsers() {
         List<UserDto> expected = List.of(userDto);
 
         when(userRepository.findAll())
@@ -91,12 +95,12 @@ class UserServiceImplTest {
 
         List<UserDto> result = userService.findAllUsers();
 
-        assertEquals(1, result.size());
-        assertEquals(expected.get(0).getId(), result.get(0).getId());
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(expected.get(0).getId(), result.get(0).getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void updateUserById_whenUserFound_thenUpdatedOnlyAvailableFields() throws UserNotFoundException {
+    void testUpdateUserById_whenUserFound_thenUpdatedOnlyAvailableFields() throws UserNotFoundException {
         UserDto newUserDto = new UserDto();
         newUserDto.setName("newName");
 
@@ -112,13 +116,13 @@ class UserServiceImplTest {
         verify(userRepository).save(argumentCaptor.capture());
         User savedUser = argumentCaptor.getValue();
 
-        assertEquals(user.getId(), savedUser.getId());
-        assertEquals(user.getEmail(), savedUser.getEmail());
-        assertEquals("newName", savedUser.getName());
+        assertEquals(user.getId(), savedUser.getId(), FAIL_ID_MESSAGE);
+        assertEquals(user.getEmail(), savedUser.getEmail(), FAIL_EMAIL_MESSAGE);
+        assertEquals("newName", savedUser.getName(), FAIL_NAME_MESSAGE);
     }
 
     @Test
-    void updateUserById_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testUpdateUserById_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -127,7 +131,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUserById() {
+    void testDeleteUserById() {
         userService.deleteUserById(userId);
 
         verify(userRepository).deleteById(userId);

@@ -28,6 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestMapperTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_REQUESTOR_MESSAGE = "Возвращаемый requestor не соответствует ожидаемому";
+    private static final String FAIL_ITEM_MESSAGE = "Возвращаемый item не соответствует ожидаемому";
+    private static final String FAIL_CREATED_MESSAGE = "Возвращаемый created не соответствует ожидаемому";
+    private static final String FAIL_DESCRIPTION_MESSAGE = "Возвращаемый description не соответствует ожидаемому";
     @Mock private UserRepository userRepository;
     @Mock private ItemRepository itemRepository;
     @Mock private ItemMapper itemMapper;
@@ -90,25 +95,25 @@ class ItemRequestMapperTest {
     }
 
     @Test
-    void toItemRequest() throws UserNotFoundException {
+    void testToItemRequest() throws UserNotFoundException {
         ItemRequest result = itemRequestMapper.toItemRequest(itemRequestDto);
 
         assertNotNull(result);
-        assertEquals(itemRequestDto.getId(), result.getId());
-        assertEquals(itemRequestDto.getDescription(), result.getDescription());
-        assertEquals(itemRequestDto.getRequestorId(), result.getRequestor().getId());
-        assertEquals(itemRequestDto.getCreated(), result.getCreated());
+        assertEquals(itemRequestDto.getId(), result.getId(), FAIL_ID_MESSAGE);
+        assertEquals(itemRequestDto.getDescription(), result.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(itemRequestDto.getRequestorId(), result.getRequestor().getId(), FAIL_REQUESTOR_MESSAGE);
+        assertEquals(itemRequestDto.getCreated(), result.getCreated(), FAIL_CREATED_MESSAGE);
     }
 
     @Test
-    void toItemRequestDto() {
+    void testToItemRequestDto() {
         ItemRequestDto result = itemRequestMapper.toItemRequestDto(itemRequest);
 
         assertNotNull(result);
-        assertEquals(itemRequest.getId(), result.getId());
-        assertEquals(itemRequest.getDescription(), result.getDescription());
-        assertEquals(itemRequest.getRequestor().getId(), result.getRequestorId());
-        assertEquals(itemRequest.getCreated(), result.getCreated());
-        assertEquals(1L, result.getItems().get(0).getId());
+        assertEquals(itemRequest.getId(), result.getId(), FAIL_ID_MESSAGE);
+        assertEquals(itemRequest.getDescription(), result.getDescription(), FAIL_DESCRIPTION_MESSAGE);
+        assertEquals(itemRequest.getRequestor().getId(), result.getRequestorId(), FAIL_REQUESTOR_MESSAGE);
+        assertEquals(itemRequest.getCreated(), result.getCreated(), FAIL_CREATED_MESSAGE);
+        assertEquals(1L, result.getItems().get(0).getId(), FAIL_ITEM_MESSAGE);
     }
 }

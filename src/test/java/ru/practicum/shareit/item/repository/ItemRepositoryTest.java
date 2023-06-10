@@ -18,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class ItemRepositoryTest {
+    private static final String FAIL_SIZE_MESSAGE = "Возвращаемый список имеет размер не соответствует ожидаемому";
+    private static final String FAIL_ITEM_MESSAGE = "Возвращаемый Item не соответствует ожидаемому";
+    private static final String FAIL_ITEM_REQUEST_MESSAGE = "Возвращаемый ItemRequest не соответствует ожидаемому";
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
@@ -84,30 +87,30 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void findByOwnerOrderByIdAsc() {
+    void testFindByOwnerOrderByIdAsc() {
         List<Item> result = itemRepository.findByOwnerOrderByIdAsc(user1);
 
-        assertEquals(3, result.size());
-        assertEquals(item1, result.get(0));
-        assertEquals(item2, result.get(1));
-        assertEquals(item3, result.get(2));
-        assertEquals(itemRequest1, result.get(2).getItemRequest());
+        assertEquals(3, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(item1, result.get(0), FAIL_ITEM_MESSAGE);
+        assertEquals(item2, result.get(1), FAIL_ITEM_MESSAGE);
+        assertEquals(item3, result.get(2), FAIL_ITEM_MESSAGE);
+        assertEquals(itemRequest1, result.get(2).getItemRequest(), FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @Test
-    void search() {
+    void testSearch() {
         List<Item> result = itemRepository.search("TeXt");
 
-        assertEquals(2, result.size());
-        assertEquals(item1, result.get(0));
-        assertEquals(item3, result.get(1));
+        assertEquals(2, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(item1, result.get(0), FAIL_ITEM_MESSAGE);
+        assertEquals(item3, result.get(1), FAIL_ITEM_MESSAGE);
     }
 
     @Test
-    void findByItemRequest() {
+    void testFindByItemRequest() {
         List<Item> result = itemRepository.findByItemRequest(itemRequest1);
 
-        assertEquals(1, result.size());
-        assertEquals(item3, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(item3, result.get(0), FAIL_ITEM_MESSAGE);
     }
 }

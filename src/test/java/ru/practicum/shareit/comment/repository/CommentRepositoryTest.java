@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class CommentRepositoryTest {
+    private static final String FAIL_SIZE_MESSAGE = "Неверный размер возвращаемого списка";
+    private static final String FAIL_COMMENT_MESSAGE = "Возвращаемый Comment не соответствует ожидаемому";
     @Autowired
     private CommentRepository commentRepository;
     @Autowired
@@ -66,10 +68,10 @@ class CommentRepositoryTest {
     }
 
     @Test
-    void findByItem() {
+    void testFindByItem() {
         List<Comment> result = commentRepository.findByItem(item1);
 
-        assertEquals(1, result.size());
-        assertEquals(comment1, result.get(0));
+        assertEquals(1, result.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(comment1, result.get(0), FAIL_COMMENT_MESSAGE);
     }
 }

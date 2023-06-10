@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class UserRepositoryTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_OPTIONAL_MESSAGE = "Возвращаемый optional не содержит объекта";
     @Autowired
     private UserRepository repository;
     private User user;
@@ -31,17 +33,17 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findUserById() {
+    void testFindUserById() {
         Optional<User> result = repository.findById(user.getId());
 
-        assertTrue(result.isPresent());
-        assertEquals(user.getId(), result.get().getId());
+        assertTrue(result.isPresent(), FAIL_OPTIONAL_MESSAGE);
+        assertEquals(user.getId(), result.get().getId(), FAIL_ID_MESSAGE);
     }
 
     @Test
-    void findUserByIdFailId() {
+    void testFindUserByIdFailId() {
         Optional<User> result = repository.findById(9999L);
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.isEmpty(), "Optional содержит объект");
     }
 }

@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 class UserControllerITest {
+    private static final String FAIL_USER_MESSAGE = "Возвращаемый user не соответствует ожидаемому";
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -44,7 +45,7 @@ class UserControllerITest {
 
     @SneakyThrows
     @Test
-    void addNewUser() {
+    void testAddNewUser() {
         when(userService.addNewUser(any(UserDto.class)))
                 .thenReturn(userDto);
 
@@ -56,12 +57,12 @@ class UserControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(userDto), result);
+        assertEquals(objectMapper.writeValueAsString(userDto), result, FAIL_USER_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void addNewUser_whenUserNotValidEmailField_thenBadRequest() {
+    void testAddNewUser_whenUserNotValidEmailField_thenBadRequest() {
         userDto.setEmail(null);
 
         mockMvc.perform(post("/users")
@@ -74,7 +75,7 @@ class UserControllerITest {
 
     @SneakyThrows
     @Test
-    void addNewUser_whenUserNotValidNameField_thenBadRequest() {
+    void testAddNewUser_whenUserNotValidNameField_thenBadRequest() {
         userDto.setName(null);
 
         mockMvc.perform(post("/users")
@@ -87,7 +88,7 @@ class UserControllerITest {
 
     @SneakyThrows
     @Test
-    void findUser() {
+    void testFindUser() {
         when(userService.findUserById(anyLong()))
                 .thenReturn(userDto);
 
@@ -97,12 +98,12 @@ class UserControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(userDto), result);
+        assertEquals(objectMapper.writeValueAsString(userDto), result, FAIL_USER_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findAllUsers() {
+    void testFindAllUsers() {
         List<UserDto> expectedList = List.of(userDto);
         when(userService.findAllUsers()).thenReturn(expectedList);
 
@@ -112,12 +113,12 @@ class UserControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_USER_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void updateUser() {
+    void testUpdateUser() {
         when(userService.updateUserById(anyLong(), any(UserDto.class)))
                 .thenReturn(userDto);
 
@@ -129,12 +130,12 @@ class UserControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(userDto), result);
+        assertEquals(objectMapper.writeValueAsString(userDto), result, FAIL_USER_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void deleteUser() {
+    void testDeleteUser() {
         mockMvc.perform(delete("/users/{userId}", userId))
                 .andExpect(status().isOk());
 

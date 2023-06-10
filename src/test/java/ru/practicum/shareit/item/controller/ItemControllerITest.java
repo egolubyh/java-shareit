@@ -26,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ItemController.class)
 class ItemControllerITest {
+    private static final String FAIL_ITEM_MESSAGE = "Возвращаемый Item не соответствует ожидаемому";
+    private static final String FAIL_COMMENT_MESSAGE = "Возвращаемый Comment не соответствует ожидаемому";
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -64,7 +66,7 @@ class ItemControllerITest {
 
     @SneakyThrows
     @Test
-    void addItem() {
+    void testAddItem() {
         when(itemService.addNewItem(any(ItemDto.class), anyLong()))
                 .thenReturn(itemDto);
 
@@ -77,12 +79,12 @@ class ItemControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(itemDto), result);
+        assertEquals(objectMapper.writeValueAsString(itemDto), result, FAIL_ITEM_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void addItem_whenItemNotValidNameField_thenBadRequest() {
+    void testAddItem_whenItemNotValidNameField_thenBadRequest() {
         itemDto.setName(null);
 
         mockMvc.perform(post("/items")
@@ -96,7 +98,7 @@ class ItemControllerITest {
 
     @SneakyThrows
     @Test
-    void addItem_whenItemNotValidDescriptionField_thenBadRequest() {
+    void testAddItem_whenItemNotValidDescriptionField_thenBadRequest() {
         itemDto.setDescription(null);
 
         mockMvc.perform(post("/items")
@@ -110,7 +112,7 @@ class ItemControllerITest {
 
     @SneakyThrows
     @Test
-    void addItem_whenItemNotValidAvailableField_thenBadRequest() {
+    void testAddItem_whenItemNotValidAvailableField_thenBadRequest() {
         itemDto.setAvailable(null);
 
         mockMvc.perform(post("/items")
@@ -124,7 +126,7 @@ class ItemControllerITest {
 
     @SneakyThrows
     @Test
-    void addComment() {
+    void testAddComment() {
         when(itemService.addNewComment(any(CommentDto.class), anyLong(), anyLong()))
                 .thenReturn(commentDto);
 
@@ -137,12 +139,12 @@ class ItemControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(commentDto), result);
+        assertEquals(objectMapper.writeValueAsString(commentDto), result, FAIL_COMMENT_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void addComment_whenCommentNotValidTextField() {
+    void testAddComment_whenCommentNotValidTextField() {
         commentDto.setText(null);
 
         mockMvc.perform(post("/items/{itemId}/comment", itemId)
@@ -156,7 +158,7 @@ class ItemControllerITest {
 
     @SneakyThrows
     @Test
-    void updateItem() {
+    void testUpdateItem() {
         when(itemService.updateItem(any(ItemDto.class),anyLong(), anyLong()))
                 .thenReturn(itemDto);
 
@@ -169,12 +171,12 @@ class ItemControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(itemDto), result);
+        assertEquals(objectMapper.writeValueAsString(itemDto), result, FAIL_ITEM_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findItemById() {
+    void testFindItemById() {
         when(itemService.readItem(anyLong(), anyLong()))
                 .thenReturn(itemIdDto);
 
@@ -185,12 +187,12 @@ class ItemControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(itemIdDto), result);
+        assertEquals(objectMapper.writeValueAsString(itemIdDto), result, FAIL_ITEM_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findItemByOwner() {
+    void testFindItemByOwner() {
         List<ItemIdDto> expectedList = List.of(itemIdDto);
         when(itemService.readAllItemByOwner(anyLong()))
                 .thenReturn(expectedList);
@@ -202,12 +204,12 @@ class ItemControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_ITEM_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findItemByParam() {
+    void testFindItemByParam() {
         List<ItemDto> expectedList = List.of(itemDto);
         when(itemService.readAllItemByParam(anyString()))
                 .thenReturn(expectedList);
@@ -219,6 +221,6 @@ class ItemControllerITest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(expectedList), result);
+        assertEquals(objectMapper.writeValueAsString(expectedList), result, FAIL_ITEM_MESSAGE);
     }
 }

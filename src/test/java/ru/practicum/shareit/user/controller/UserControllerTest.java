@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
+    private static final String FAIL_USER_MESSAGE = "Возвращаемый user не соответствует ожидаемому";
     @Mock
     private UserService userService;
 
@@ -34,51 +35,51 @@ class UserControllerTest {
     }
 
     @Test
-    void addNewUser() {
+    void testAddNewUser() {
         when(userService.addNewUser(any(UserDto.class)))
                 .thenReturn(userDto);
 
         UserDto actual = userController.addNewUser(userDto);
 
-        assertEquals(userDto, actual);
+        assertEquals(userDto, actual, FAIL_USER_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findUser() {
+    void testFindUser() {
         when(userService.findUserById(anyLong()))
                 .thenReturn(userDto);
 
         UserDto actual = userController.findUser(1L);
 
-        assertEquals(userDto, actual);
+        assertEquals(userDto, actual, FAIL_USER_MESSAGE);
     }
 
     @Test
-    void findAllUsers() {
+    void testFindAllUsers() {
         List<UserDto> expectedList = List.of(userDto);
 
         when(userService.findAllUsers()).thenReturn(expectedList);
 
         List<UserDto> actual = userController.findAllUsers();
 
-        assertEquals(expectedList, actual);
+        assertEquals(expectedList, actual, FAIL_USER_MESSAGE);
 
     }
 
     @SneakyThrows
     @Test
-    void updateUser() {
+    void testUpdateUser() {
         when(userService.updateUserById(anyLong(),any(UserDto.class)))
                 .thenReturn(userDto);
 
         UserDto actual = userController.updateUser(1L, userDto);
 
-        assertEquals(userDto, actual);
+        assertEquals(userDto, actual, FAIL_USER_MESSAGE);
     }
 
     @Test
-    void deleteUser() {
+    void testDeleteUser() {
         Long userId = 0L;
         userController.deleteUser(userId);
 

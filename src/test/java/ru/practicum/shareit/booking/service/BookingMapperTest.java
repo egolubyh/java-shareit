@@ -26,6 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingMapperTest {
+    private static final String FAIL_ID_MESSAGE = "ID не соответствует ожидаемому";
+    private static final String FAIL_ITEM_MESSAGE = "Item не соответствует ожидаемому";
+    private static final String FAIL_START_MESSAGE = "Дата начала не соответствует ожидаемой";
+    private static final String FAIL_END_MESSAGE = "Дата конца бронирования не соответствует ожидаемой";
+    private static final String FAIL_BOOKER_MESSAGE = "Booker не соответствует ожидаемому";
+    private static final String FAIL_STATUS_MESSAGE = "Status не соответствует ожидаемому";
     @Mock private ItemRepository itemRepository;
     @Mock private UserRepository userRepository;
     @Mock private UserMapper userMapper;
@@ -73,38 +79,37 @@ class BookingMapperTest {
     }
 
     @Test
-    void toBooking() {
+    void testToBooking() {
         Booking result = bookingMapper.toBooking(bookingDto,1L);
 
         assertNotNull(result);
-        assertEquals(bookingDto.getItem().getId(), result.getItem().getId());
-        assertEquals(bookingDto.getStart(), result.getStart());
-        assertEquals(bookingDto.getEnd(), result.getEnd());
-        assertEquals(bookingDto.getBooker().getId(), result.getBooker().getId());
-        assertEquals(bookingDto.getBooker().getId(), result.getBooker().getId());
-        assertEquals(Status.WAITING, result.getStatus());
+        assertEquals(bookingDto.getItem().getId(), result.getItem().getId(), FAIL_ITEM_MESSAGE);
+        assertEquals(bookingDto.getStart(), result.getStart(), FAIL_START_MESSAGE);
+        assertEquals(bookingDto.getEnd(), result.getEnd(), FAIL_END_MESSAGE);
+        assertEquals(bookingDto.getBooker().getId(), result.getBooker().getId(), FAIL_BOOKER_MESSAGE);
+        assertEquals(Status.WAITING, result.getStatus(), FAIL_STATUS_MESSAGE);
     }
 
     @Test
-    void toBookingDto() {
+    void testToBookingDto() {
         BookingDto result = bookingMapper.toBookingDto(booking);
 
         assertNotNull(result);
-        assertEquals(booking.getId(), result.getId());
-        assertEquals(booking.getItem().getId(), result.getItemId());
-        assertEquals(booking.getStart(), result.getStart());
-        assertEquals(booking.getEnd(), result.getEnd());
-        assertEquals(booking.getItem().getId(), result.getItem().getId());
-        assertEquals(booking.getBooker().getId(), result.getBooker().getId());
-        assertEquals(booking.getStatus(), result.getStatus());
+        assertEquals(booking.getId(), result.getId(), FAIL_ID_MESSAGE);
+        assertEquals(booking.getItem().getId(), result.getItemId(), FAIL_ITEM_MESSAGE);
+        assertEquals(booking.getStart(), result.getStart(), FAIL_START_MESSAGE);
+        assertEquals(booking.getEnd(), result.getEnd(), FAIL_END_MESSAGE);
+        assertEquals(booking.getItem().getId(), result.getItem().getId(), FAIL_ITEM_MESSAGE);
+        assertEquals(booking.getBooker().getId(), result.getBooker().getId(), FAIL_BOOKER_MESSAGE);
+        assertEquals(booking.getStatus(), result.getStatus(), FAIL_STATUS_MESSAGE);
     }
 
     @Test
-    void toBookingIdDto() {
+    void testToBookingIdDto() {
         BookingIdDto result = bookingMapper.toBookingIdDto(booking);
 
         assertNotNull(result);
-        assertEquals(booking.getId(), result.getId());
-        assertEquals(booking.getBooker().getId(), result.getBookerId());
+        assertEquals(booking.getId(), result.getId(), FAIL_ID_MESSAGE);
+        assertEquals(booking.getBooker().getId(), result.getBookerId(), FAIL_BOOKER_MESSAGE);
     }
 }

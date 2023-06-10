@@ -30,6 +30,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImpTest {
+    private static final String FAIL_SIZE_MESSAGE = "Неверный размер возвращаемого списка";
+    private static final String FAIL_BOOKING_MESSAGE = "Возвращаемый Booking не соответствует ожидаемому";
+    private static final String FAIL_STATUS_MESSAGE = "Status не соответствует ожидаемому";
     @Mock private BookingRepository bookingRepository;
     @Mock private ItemRepository itemRepository;
     @Mock private UserRepository userRepository;
@@ -89,7 +92,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void addBooking_whenAllFieldsIsOk_thenReturnBookingDto()
+    void testAddBooking_whenAllFieldsIsOk_thenReturnBookingDto()
             throws UserNotFoundException, BookingOwnerException, DateEndBeforeStartException, NotAvailableException,
             ItemNotFoundException, DateEndEqualStartException {
         bookingService.addBooking(bookingDto, user.getId());
@@ -98,11 +101,11 @@ class BookingServiceImpTest {
 
         Booking actual = argumentCaptor.getValue();
 
-        assertEquals(actual, booking);
+        assertEquals(actual, booking, FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void addBooking_whenItemNotFound_thenItemNotFoundExceptionThrow() {
+    void testAddBooking_whenItemNotFound_thenItemNotFoundExceptionThrow() {
         when(itemRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -111,7 +114,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void addBooking_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testAddBooking_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -120,7 +123,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void addBooking_whenAvailableFalse_thenNotAvailableExceptionThrow() {
+    void testAddBooking_whenAvailableFalse_thenNotAvailableExceptionThrow() {
         item.setAvailable(false);
 
         assertThrows(NotAvailableException.class,
@@ -128,7 +131,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void addBooking_whenDateEndBeforeStart_thenDateEndBeforeStartExceptionThrow() {
+    void testAddBooking_whenDateEndBeforeStart_thenDateEndBeforeStartExceptionThrow() {
         bookingDto.setEnd(now.minusDays(1));
 
         assertThrows(DateEndBeforeStartException.class,
@@ -136,7 +139,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void addBooking_whenDateEndEqualStart_thenDateEndEqualStartExceptionThrow() {
+    void testAddBooking_whenDateEndEqualStart_thenDateEndEqualStartExceptionThrow() {
         bookingDto.setEnd(now);
         bookingDto.setStart(now);
 
@@ -145,7 +148,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void addBooking_whenBookingBadOwner_thenBookingOwnerExceptionThrow() {
+    void testAddBooking_whenBookingBadOwner_thenBookingOwnerExceptionThrow() {
         item.setOwner(user);
 
         assertThrows(BookingOwnerException.class,
@@ -153,7 +156,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void updateApprove_whenAllFieldsIsOk_thenSaveAndReturnBooking()
+    void testUpdateApprove_whenAllFieldsIsOk_thenSaveAndReturnBooking()
             throws BookingNotFoundException, BadBookingStatusException, BadOwnerException, UserNotFoundException {
         booking.setStatus(Status.WAITING);
 
@@ -163,11 +166,11 @@ class BookingServiceImpTest {
 
         Booking actual = argumentCaptor.getValue();
 
-        assertEquals(Status.APPROVED, actual.getStatus());
+        assertEquals(Status.APPROVED, actual.getStatus(), FAIL_STATUS_MESSAGE);
     }
 
     @Test
-    void updateApprove_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testUpdateApprove_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -176,7 +179,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void updateApprove_whenBookingNotFound_thenBookingNotFoundExceptionThrow() {
+    void testUpdateApprove_whenBookingNotFound_thenBookingNotFoundExceptionThrow() {
         when(bookingRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -185,7 +188,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void updateApprove_whenBadOwner_thenBadOwnerExceptionThrow() {
+    void testUpdateApprove_whenBadOwner_thenBadOwnerExceptionThrow() {
         item.setOwner(owner);
 
         assertThrows(BadOwnerException.class,
@@ -193,7 +196,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void updateApprove_whenBadStatusBooking_thenBadBookingStatusExceptionThrow() {
+    void testUpdateApprove_whenBadStatusBooking_thenBadBookingStatusExceptionThrow() {
         booking.setStatus(Status.APPROVED);
 
         assertThrows(BadBookingStatusException.class,
@@ -201,16 +204,16 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void getBooking_whenAllFieldsIsOk_thenReturnBooking() throws UserNotFoundException, BookingNotFoundException {
+    void testGetBooking_whenAllFieldsIsOk_thenReturnBooking() throws UserNotFoundException, BookingNotFoundException {
         when(bookingRepository.findBookingByIdAndUser(anyLong(),any(User.class)))
                 .thenReturn(Optional.of(booking));
         BookingDto actual = bookingService.getBooking(booking.getId(), user.getId());
 
-        assertEquals(actual, bookingDto);
+        assertEquals(actual, bookingDto, FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getBooking_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testGetBooking_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -219,7 +222,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void getBooking_whenBookingNotFound_thenBookingNotFoundExceptionThrow() {
+    void testGetBooking_whenBookingNotFound_thenBookingNotFoundExceptionThrow() {
         when(bookingRepository.findBookingByIdAndUser(anyLong(), any(User.class)))
                 .thenReturn(Optional.empty());
 
@@ -228,7 +231,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsALL_thenReturnBookings()
+    void testGetAllBookingByUser_whenStateIsALL_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByBooker(any(User.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(booking)));
@@ -236,12 +239,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByUser(
                 user.getId(), "ALL", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsCURRENT_thenReturnBookings()
+    void testGetAllBookingByUser_whenStateIsCURRENT_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByBookerAndStartBeforeAndEndAfter(
                 any(User.class), any(LocalDateTime.class),
@@ -251,12 +254,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByUser(
                 user.getId(), "CURRENT", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsPAST_thenReturnBookings()
+    void testGetAllBookingByUser_whenStateIsPAST_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByBookerAndEndBefore(
                 any(User.class), any(LocalDateTime.class), any(PageRequest.class)))
@@ -265,12 +268,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByUser(
                 user.getId(), "PAST", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsFUTURE_thenReturnBookings()
+    void testGetAllBookingByUser_whenStateIsFUTURE_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByBookerAndStartGreaterThan(
                 any(User.class), any(LocalDateTime.class), any(PageRequest.class)))
@@ -279,12 +282,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByUser(
                 user.getId(), "FUTURE", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsWAITING_thenReturnBookings()
+    void testGetAllBookingByUser_whenStateIsWAITING_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByBookerAndStatus(
                 any(User.class), any(Status.class), any(PageRequest.class)))
@@ -293,12 +296,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByUser(
                 user.getId(), "WAITING", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsREJECTED_thenReturnBookings()
+    void testGetAllBookingByUser_whenStateIsREJECTED_thenReturnBookings()
          throws UserNotFoundException, UnsupportedStatusException {
             when(bookingRepository.findBookingByBookerAndStatus(
                     any(User.class), any(Status.class), any(PageRequest.class)))
@@ -307,18 +310,18 @@ class BookingServiceImpTest {
             List<BookingDto> actual = bookingService.getAllBookingByUser(
                     user.getId(), "REJECTED", 0, 1);
 
-            assertEquals(1, actual.size());
-            assertEquals(bookingDto, actual.get(0));
+            assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+            assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByUser_whenStateIsUNKNOW_thenUnsupportedStatusExceptionThrow() {
+    void testGetAllBookingByUser_whenStateIsUNKNOW_thenUnsupportedStatusExceptionThrow() {
         assertThrows(UnsupportedStatusException.class,
                 () -> bookingService.getAllBookingByUser(user.getId(), "UNSUPPORTED", 0, 1));
     }
 
     @Test
-    void getAllBookingByUser_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testGetAllBookingByUser_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -327,7 +330,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void getAllBookingByOwner_whenStateIsALL_thenReturnBookings()
+    void testGetAllBookingByOwner_whenStateIsALL_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByItem_Owner(any(User.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(booking)));
@@ -335,12 +338,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByOwner(
                 owner.getId(), "ALL", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByOwner_whenStateIsCURRENT_thenReturnBookings() throws UserNotFoundException, UnsupportedStatusException {
+    void testGetAllBookingByOwner_whenStateIsCURRENT_thenReturnBookings() throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByItem_OwnerAndStartBeforeAndEndAfter(
                 any(User.class), any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(booking)));
@@ -348,12 +351,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByOwner(
                 owner.getId(), "CURRENT", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByOwner_whenStateIsPAST_thenReturnBookings()
+    void testGetAllBookingByOwner_whenStateIsPAST_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByItem_OwnerAndEndBefore(
                 any(User.class), any(LocalDateTime.class), any(PageRequest.class)))
@@ -362,12 +365,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByOwner(
                 owner.getId(), "PAST", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByOwner_whenStateIsFUTURE_thenReturnBookings()
+    void testGetAllBookingByOwner_whenStateIsFUTURE_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByItem_OwnerAndStartGreaterThan(
                 any(User.class), any(LocalDateTime.class), any(PageRequest.class)))
@@ -376,12 +379,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByOwner(
                 owner.getId(), "FUTURE", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByOwner_whenStateIsWAITING_thenReturnBookings()
+    void testGetAllBookingByOwner_whenStateIsWAITING_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByItem_OwnerAndStatus(
                 any(User.class), any(Status.class), any(PageRequest.class)))
@@ -390,12 +393,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByOwner(
                 owner.getId(), "WAITING", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByOwner_whenStateIsREJECTED_thenReturnBookings()
+    void testGetAllBookingByOwner_whenStateIsREJECTED_thenReturnBookings()
             throws UserNotFoundException, UnsupportedStatusException {
         when(bookingRepository.findBookingByItem_OwnerAndStatus(
                 any(User.class), any(Status.class), any(PageRequest.class)))
@@ -404,12 +407,12 @@ class BookingServiceImpTest {
         List<BookingDto> actual = bookingService.getAllBookingByOwner(
                 owner.getId(), "REJECTED", 0, 1);
 
-        assertEquals(1, actual.size());
-        assertEquals(bookingDto, actual.get(0));
+        assertEquals(1, actual.size(), FAIL_SIZE_MESSAGE);
+        assertEquals(bookingDto, actual.get(0), FAIL_BOOKING_MESSAGE);
     }
 
     @Test
-    void getAllBookingByOwner_whenUserNotFound_thenUserNotFoundExceptionThrow() {
+    void testGetAllBookingByOwner_whenUserNotFound_thenUserNotFoundExceptionThrow() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -418,7 +421,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void getAllBookingByOwner_whenUnsupportedStatus_thenUnsupportedStatusExceptionThrow() {
+    void testGetAllBookingByOwner_whenUnsupportedStatus_thenUnsupportedStatusExceptionThrow() {
         assertThrows(UnsupportedStatusException.class,
                 () -> bookingService.getAllBookingByOwner(user.getId(), "UNSUPPORTED", 0, 1));
     }

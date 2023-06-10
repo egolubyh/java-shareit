@@ -21,6 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommentMapperTest {
+    private static final String FAIL_ID_MESSAGE = "Возвращаемый ID не соответствует ожидаемому";
+    private static final String FAIL_TEXT_MESSAGE = "Возвращаемый text не соответствует ожидаемому";
+    private static final String FAIL_NAME_MESSAGE = "Возвращаемый name не соответствует ожидаемому";
+    private static final String FAIL_ITEM_ID_MESSAGE = "Возвращаемый itemId не соответствует ожидаемому";
+    private static final String FAIL_USER_ID_MESSAGE = "Возвращаемый userId не соответствует ожидаемому";
+    private static final String FAIL_CREATED_MESSAGE = "Возвращаемый created не соответствует ожидаемому";
     private static final Long USER_ID = 22L;
     private static final Long ITEM_ID = 33L;
     private static final LocalDateTime CREATED = LocalDateTime.now();
@@ -63,26 +69,26 @@ class CommentMapperTest {
     }
 
     @Test
-    void toComment() {
+    void testToComment() {
         Comment result = commentMapper.toComment(commentDto);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("text", result.getText());
-        assertEquals(ITEM_ID, result.getItem().getId());
-        assertEquals(USER_ID, result.getAuthor().getId());
-        assertEquals(CREATED, result.getCreated());
+        assertEquals(1L, result.getId(), FAIL_ID_MESSAGE);
+        assertEquals("text", result.getText(), FAIL_TEXT_MESSAGE);
+        assertEquals(ITEM_ID, result.getItem().getId(), FAIL_ITEM_ID_MESSAGE);
+        assertEquals(USER_ID, result.getAuthor().getId(), FAIL_USER_ID_MESSAGE);
+        assertEquals(CREATED, result.getCreated(), FAIL_CREATED_MESSAGE);
     }
 
     @Test
-    void toCommentDto() {
+    void testToCommentDto() {
         CommentDto result = commentMapper.toCommentDto(comment);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("text", result.getText());
-        assertEquals("name", result.getAuthorName());
-        assertEquals(ITEM_ID, result.getItemId());
-        assertEquals(CREATED, result.getCreated());
+        assertEquals(1L, result.getId(), FAIL_ID_MESSAGE);
+        assertEquals("text", result.getText(), FAIL_TEXT_MESSAGE);
+        assertEquals("name", result.getAuthorName(), FAIL_NAME_MESSAGE);
+        assertEquals(ITEM_ID, result.getItemId(), FAIL_ITEM_ID_MESSAGE);
+        assertEquals(CREATED, result.getCreated(), FAIL_CREATED_MESSAGE);
     }
 }

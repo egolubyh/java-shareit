@@ -98,7 +98,7 @@ public class BookingServiceImp implements BookingService {
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User с id = " + userId + " не существует."));
         Page<Booking> bookings;
-        int page = from > 0 ? from / size : 0;
+        int page = from > 0 ? (from / size) : 0;
 
         switch (state) {
             case "ALL" : {
@@ -142,7 +142,7 @@ public class BookingServiceImp implements BookingService {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new UserNotFoundException("User с id = " + ownerId + " не существует."));
         Page<Booking> bookings;
-        int page = from > 0 ? from / size : 0;
+        int page = from > 0 ? (from / size) : 0;
 
         switch (state) {
             case "ALL" : {

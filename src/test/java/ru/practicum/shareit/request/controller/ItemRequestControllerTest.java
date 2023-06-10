@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestControllerTest {
+    private static final String FAIL_ITEM_REQUEST_MESSAGE = "Возвращаемый itemRequest не соответствует ожидаемому";
     @Mock
     private ItemRequestService itemRequestService;
     @InjectMocks
@@ -38,41 +39,41 @@ class ItemRequestControllerTest {
 
         ItemRequestDto actual = itemRequestController.addNewItemRequest(itemRequestDto, 1L);
 
-        assertEquals(itemRequestDto, actual);
+        assertEquals(itemRequestDto, actual, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findItemRequestsByUser() {
+    void testFindItemRequestsByUser() {
         List<ItemRequestDto> expectedList = List.of(itemRequestDto);
         when(itemRequestService.readItemRequestByUser(anyLong()))
                 .thenReturn(expectedList);
 
         List<ItemRequestDto> actual = itemRequestController.findItemRequestsByUser(1L);
 
-        assertEquals(expectedList, actual);
+        assertEquals(expectedList, actual, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findItemRequestById() {
+    void testFindItemRequestById() {
         when(itemRequestService.readItemRequestById(anyLong(),anyLong()))
                 .thenReturn(itemRequestDto);
 
         ItemRequestDto actual = itemRequestController.findItemRequestById(1L, 1L);
 
-        assertEquals(itemRequestDto, actual);
+        assertEquals(itemRequestDto, actual, FAIL_ITEM_REQUEST_MESSAGE);
     }
 
     @SneakyThrows
     @Test
-    void findAllItemRequest() {
+    void testFindAllItemRequest() {
         List<ItemRequestDto> expectedList = List.of(itemRequestDto);
         when(itemRequestService.readAll(anyLong(),anyInt(),anyInt()))
                 .thenReturn(expectedList);
 
         List<ItemRequestDto> actual = itemRequestController.findAllItemRequest(1L,1,1);
 
-        assertEquals(expectedList, actual);
+        assertEquals(expectedList, actual, FAIL_ITEM_REQUEST_MESSAGE);
     }
 }

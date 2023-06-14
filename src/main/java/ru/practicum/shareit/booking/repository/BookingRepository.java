@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,33 +11,40 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findBookingByBookerOrderByStartDesc(User booker);
+    Page<Booking> findBookingByBooker(
+            User booker, Pageable pageable);
 
-    List<Booking> findBookingByBookerAndStatusOrderByStartDesc(User booker, Status status);
+    Page<Booking> findBookingByBookerAndStatus(
+            User booker, Status status, Pageable pageable);
 
-    List<Booking> findBookingByBookerAndStartGreaterThanOrderByStartDesc(User booker, LocalDateTime start);
+    Page<Booking> findBookingByBookerAndStartGreaterThan(
+            User booker, LocalDateTime start, Pageable pageable);
 
-    List<Booking> findBookingByBookerAndEndBeforeOrderByStartDesc(User booker, LocalDateTime end);
+    Page<Booking> findBookingByBookerAndEndBefore(
+            User booker, LocalDateTime end, Pageable pageable);
 
-    List<Booking> findBookingByBookerAndStartBeforeAndEndAfterOrderByStartDesc(
-            User booker, LocalDateTime start, LocalDateTime end);
+    Page<Booking> findBookingByBookerAndStartBeforeAndEndAfter(
+            User booker, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    List<Booking> findBookingByItem_OwnerAndStatusOrderByStartDesc(User itemOwner, Status status);
+    Page<Booking> findBookingByItem_OwnerAndStatus(
+            User itemOwner, Status status, Pageable pageable);
 
-    List<Booking> findBookingByItem_OwnerOrderByStartDesc(User itemOwner);
+    Page<Booking> findBookingByItem_Owner(
+            User itemOwner, Pageable pageable);
 
-    List<Booking> findBookingByItem_OwnerAndStartGreaterThanOrderByStartDesc(User itemOwner, LocalDateTime start);
+    Page<Booking> findBookingByItem_OwnerAndStartGreaterThan(
+            User itemOwner, LocalDateTime start, Pageable pageable);
 
-    List<Booking> findBookingByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(
-            User itemOwner, LocalDateTime start, LocalDateTime end);
+    Page<Booking> findBookingByItem_OwnerAndStartBeforeAndEndAfter(
+            User itemOwner, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    List<Booking> findBookingByItem_OwnerAndEndBeforeOrderByStartDesc(User itemOwner, LocalDateTime start);
+    Page<Booking> findBookingByItem_OwnerAndEndBefore(
+            User itemOwner, LocalDateTime start, Pageable pageable);
 
     @Query ("SELECT b FROM Booking b " +
             "WHERE b.id = ?1 AND (b.booker = ?2 OR b.item.owner = ?2) ")

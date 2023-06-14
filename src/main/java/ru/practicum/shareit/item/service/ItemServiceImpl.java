@@ -137,6 +137,6 @@ public class ItemServiceImpl implements ItemService {
         }
         itemMapper.updateItem(itemDto, item);
 
-        return itemMapper.toItemDto(item);
+        return itemMapper.toItemDto(itemRepository.save(item));
     }
 }

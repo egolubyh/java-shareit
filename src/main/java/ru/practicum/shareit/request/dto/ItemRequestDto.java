@@ -1,8 +1,15 @@
 package ru.practicum.shareit.request.dto;
 
-import lombok.Data;
+import lombok.*;
+import ru.practicum.shareit.item.dto.ItemIdDto;
 
-@Data
+import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class ItemRequestDto {
     /**
      * уникальный идентификатор запроса
@@ -12,6 +19,7 @@ public class ItemRequestDto {
     /**
      * текст запроса, содержащий описание требуемой вещи
      */
+    @NotEmpty
     private String description;
 
     /**
@@ -19,4 +27,13 @@ public class ItemRequestDto {
      */
     private Long requestorId;
 
+    /**
+     * дата создания запроса
+     */
+    private LocalDateTime created;
+
+    /**
+     * список вещей
+     */
+    private List<ItemIdDto> items;
 }
